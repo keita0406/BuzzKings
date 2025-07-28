@@ -45,8 +45,8 @@ export default function Layout({ children }: LayoutProps) {
         transition={{ duration: 0.6 }}
         className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
           scrolled
-            ? 'bg-white/80 backdrop-blur-md shadow-lg'
-            : 'bg-transparent'
+            ? 'bg-white backdrop-blur-md shadow-lg'
+            : 'bg-white shadow-sm'
         }`}
       >
         <nav className="mx-auto max-w-7xl px-6 lg:px-8" aria-label="Top">
@@ -59,9 +59,18 @@ export default function Layout({ children }: LayoutProps) {
                   e.preventDefault()
                   scrollToSection('#home')
                 }}
-                className="text-2xl font-bold gradient-text cursor-pointer"
+                className="flex items-center space-x-3 cursor-pointer"
               >
-                BuzzKings
+                <img 
+                  src="/images/buzzkings-logo.png" 
+                  alt="BuzzKings Logo" 
+                  className="h-10 w-10 object-contain"
+                />
+                <img 
+                  src="/images/buzzkings-name.png" 
+                  alt="BuzzKings Name" 
+                  className="h-20 object-contain"
+                />
               </motion.a>
             </div>
             <div className="ml-10 hidden space-x-8 lg:block">

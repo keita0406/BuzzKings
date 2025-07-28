@@ -4,6 +4,7 @@ import Layout from '@/components/Layout'
 import HeroSection from '@/components/HeroSection'
 import ServicesSection from '@/components/ServicesSection'
 import AchievementsSection from '@/components/AchievementsSection'
+import FollowerGrowthSection from '@/components/FollowerGrowthSection'
 import TestimonialsSection from '@/components/TestimonialsSection'
 import CounselingSection from '@/components/CounselingSection'
 import FAQSection from '@/components/FAQSection'
@@ -15,6 +16,7 @@ export default function Home() {
       <HeroSection />
       <ServicesSection />
       <AchievementsSection />
+      <FollowerGrowthSection />
       <TestimonialsSection />
       <CounselingSection />
       <FAQSection />
