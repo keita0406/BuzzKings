@@ -7,16 +7,13 @@ import {
   CpuChipIcon, 
   MegaphoneIcon,
   PresentationChartLineIcon,
-  SparklesIcon 
+  SparklesIcon,
+  FilmIcon,
+  UserGroupIcon,
+  DocumentTextIcon
 } from '@heroicons/react/24/outline'
 
 const services = [
-  {
-    icon: SparklesIcon,
-    title: 'AI コンテンツ生成',
-    description: '最新のAI技術を活用して、バズりやすいコンテンツを自動生成。あなたのブランドに最適化されたコンテンツを効率的に作成します。',
-    features: ['自動テキスト生成', '画像生成AI', 'ハッシュタグ最適化']
-  },
   {
     icon: ChartBarIcon,
     title: 'SNS 分析・最適化',
@@ -24,28 +21,34 @@ const services = [
     features: ['リアルタイム分析', 'トレンド予測', 'エンゲージメント最適化']
   },
   {
+    icon: DocumentTextIcon,
+    title: 'コンテンツ戦略設計',
+    description: 'ブランドの世界観を強化しつつ、アルゴリズムに愛される投稿フォーマットとストーリーテリングを構築します。',
+    features: ['ビジュアルテンプレート開発', 'コピーライティング最適化', 'UGC活用プラン']
+  },
+  {
     icon: MegaphoneIcon,
-    title: 'バイラルマーケティング',
-    description: 'バズを生み出すためのマーケティング戦略を立案・実行。インフルエンサーとのコラボレーションも含めた総合的なアプローチ。',
-    features: ['バイラル戦略立案', 'インフルエンサー連携', 'クロスプラットフォーム展開']
+    title: 'フォロワー急増キャンペーン',
+    description: '短期的なフォロワーブーストと長期コミュニティ化を両立させるキャンペーンを企画・運用します。',
+    features: ['バイラル企画立案', 'ハッシュタグ＆リール戦略', '成果レポート＆改善']
   },
   {
-    icon: CpuChipIcon,
-    title: 'AI チャットボット',
-    description: '24/7対応のAIチャットボットで、フォロワーとのエンゲージメントを向上。パーソナライズされた自動応答システム。',
-    features: ['自動応答', 'パーソナライゼーション', 'マルチプラットフォーム対応']
-  },
-  {
-    icon: PresentationChartLineIcon,
-    title: '戦略コンサルティング',
-    description: 'SNS × AIの専門家による個別コンサルティング。あなたのビジネス目標に合わせたカスタム戦略を提供します。',
-    features: ['個別戦略立案', '定期レビュー', '成果測定']
+    icon: UserGroupIcon,
+    title: 'インフルエンサー連携・PR',
+    description: 'ブランドと相性の良いインフルエンサーをマッチングし、ROIの高いコラボレーションを実現します。',
+    features: ['キャスティング＆交渉', 'コラボコンテンツ制作', 'ROIトラッキング']
   },
   {
     icon: BoltIcon,
-    title: '高速実装サポート',
-    description: '戦略から実装まで、スピーディーな展開をサポート。最短でバズを生み出すための緊急対応体制も完備。',
-    features: ['緊急対応', 'スピード実装', '24時間サポート']
+    title: 'SNS広告運用最適化',
+    description: 'AIとデータ分析で広告クリエイティブとターゲティングを高速PDCA。広告費を無駄なく成果最大化します。',
+    features: ['ターゲット精査', 'クリエイティブABテスト', 'コンバージョン最適化']
+  },
+  {
+    icon: FilmIcon,
+    title: 'バズる動画編集・広告動画編集',
+    description: '編集が下手だと全てが台無し！？',
+    features: ['バズる動画編集テクニック', '広告動画作成伝授', 'AIを使った時短動画編集']
   }
 ]
 
@@ -64,7 +67,7 @@ export default function ServicesSection() {
             <span className="gradient-text">サービス</span>
           </h2>
           <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-            SNS × AIの力で、あなたのブランドを次のレベルへ
+            SNSの力で、あなたのビジネスを加速させます
           </p>
         </motion.div>
 
@@ -116,22 +119,7 @@ export default function ServicesSection() {
           ))}
         </div>
 
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.5 }}
-          viewport={{ once: true }}
-          className="text-center mt-16"
-        >
-          <motion.button
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            onClick={() => document.querySelector('#contact')?.scrollIntoView({ behavior: 'smooth' })}
-            className="bg-insta-gradient text-white px-8 py-4 rounded-full text-lg font-semibold shadow-lg hover:shadow-xl transition-all duration-300"
-          >
-            詳細を相談する
-          </motion.button>
-        </motion.div>
+
       </div>
     </section>
   )

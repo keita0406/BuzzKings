@@ -23,7 +23,7 @@ const contactInfo = [
   {
     icon: EnvelopeIcon,
     title: 'メール',
-    content: 'info@buzzkings.jp',
+    content: 'info@buzzlab.jp',
     description: '24時間以内にご返信'
   },
   {
@@ -41,12 +41,12 @@ const contactInfo = [
 ]
 
 const serviceOptions = [
-  'AI コンテンツ生成',
+  'SNSコンテンツ制作',
   'SNS 分析・最適化',
   'バイラルマーケティング',
-  'AI チャットボット',
+  'SNS広告運用',
   '戦略コンサルティング',
-  '高速実装サポート',
+  '動画編集・制作',
   '無料カウンセリング',
   'その他'
 ]

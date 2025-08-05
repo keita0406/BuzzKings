@@ -6,8 +6,8 @@ import { ChevronDownIcon } from '@heroicons/react/24/outline'
 
 const faqs = [
   {
-    question: 'BuzzKingsのサービスを利用するのに、SNSの知識は必要ですか？',
-    answer: 'いいえ、SNSの専門知識は必要ありません。私たちが初心者の方にも分かりやすく、ステップバイステップでサポートいたします。AIツールの使い方から戦略立案まで、すべてお任せください。'
+    question: 'BUZZLABのサービスを利用するのに、SNSの知識は必要ですか？',
+    answer: 'いいえ、SNSの専門知識は必要ありません。私たちが初心者の方にも分かりやすく、ステップバイステップでサポートいたします。効果的なコンテンツ制作から戦略立案まで、すべてお任せください。'
   },
   {
     question: '結果が出るまでにどのくらい時間がかかりますか？',
@@ -15,11 +15,11 @@ const faqs = [
   },
   {
     question: 'どのSNSプラットフォームに対応していますか？',
-    answer: 'Instagram、TikTok、Twitter（X）、YouTube、Facebook、LinkedInなど、主要なSNSプラットフォーム全てに対応しています。お客様のビジネスに最適なプラットフォームをご提案いたします。'
+    answer: 'Instagramをメインに、TikTok、YouTube、Twitter（X）、Facebook、LinkedInなど、主要なSNSプラットフォーム全てに対応しています。お客様のビジネスに最適なプラットフォームをご提案いたします。'
   },
   {
-    question: 'AI生成コンテンツの著作権はどうなりますか？',
-    answer: 'AI生成されたコンテンツの著作権は100%お客様に帰属します。生成されたコンテンツは自由にご利用いただけ、商用利用も問題ありません。安心してご活用ください。'
+    question: '制作したSNSコンテンツの著作権はどうなりますか？',
+    answer: '制作されたコンテンツの著作権は100%お客様に帰属します。制作されたコンテンツは自由にご利用いただけ、商用利用も問題ありません。安心してご活用ください。'
   },
   {
     question: '料金体系について教えてください',
@@ -31,7 +31,7 @@ const faqs = [
   },
   {
     question: '他社との違いは何ですか？',
-    answer: '最大の違いは「SNS×AI」の融合による最先端のアプローチです。単なるSNS運用代行ではなく、AI技術を活用した戦略的なバズ創出を行います。また、実績に裏打ちされた確実な成果をお約束します。'
+    answer: '最大の違いは「データドリブン×クリエイティブ」の融合による最先端のアプローチです。単なるSNS運用代行ではなく、データ分析に基づいた戦略的なバズ創出を行います。また、実績に裏打ちされた確実な成果をお約束します。'
   },
   {
     question: 'クライアントの業界に制限はありますか？',
@@ -54,7 +54,7 @@ export default function FAQSection() {
             <span className="gradient-text">よくある質問</span>
           </h2>
           <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-            BuzzKingsについて、よくお寄せいただくご質問にお答えします
+            BUZZLABについて、よくお寄せいただくご質問にお答えします
           </p>
         </motion.div>
 

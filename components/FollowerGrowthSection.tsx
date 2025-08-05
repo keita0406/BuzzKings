@@ -83,11 +83,13 @@ export default function FollowerGrowthSection() {
         {/* ヘッダー */}
         <div className="flex justify-between items-center mb-12">
           <div>
-            <h2 className="text-4xl font-bold text-gray-800 mb-4 relative">
-              SNSフォロワー増加スケジュール
+            <h2 className="text-4xl font-bold mb-4 relative">
+              <span className="bg-gradient-to-r from-purple-500 via-blue-500 to-pink-500 bg-clip-text text-transparent">
+                SNSフォロワー増加スケジュール
+              </span>
               <div className="absolute bottom-0 left-0 w-16 h-1 bg-pink-500 mt-2"></div>
             </h2>
-            <p className="text-xl text-gray-600">毎月300人UP・年間3000人以上の成長を実現するロードマップ</p>
+            <p className="text-xl text-gray-600 font-serif">年間3000人・月300人以上の成長を実現するロードマップ（広告費月3万前後）</p>
           </div>
           <div className="text-right">
             <div className="text-5xl font-bold text-pink-500">3,000+</div>
@@ -206,21 +208,25 @@ export default function FollowerGrowthSection() {
         </div>
 
         {/* コンセプトメッセージ */}
-        <div className="bg-gradient-to-r from-pink-50 to-purple-50 rounded-2xl p-8 border-2 border-dashed border-pink-300">
-          <h3 className="text-2xl font-bold text-gray-800 mb-6 text-center">KEITAの戦略的アプローチ</h3>
+        <div className="bg-gradient-to-br from-purple-900/20 via-blue-900/20 to-pink-900/20 backdrop-blur-lg rounded-3xl p-8 border border-purple-500/30 shadow-2xl">
+          <h3 className="text-3xl font-bold mb-8 text-center">
+            <span className="bg-gradient-to-r from-purple-500 via-blue-500 to-pink-500 bg-clip-text text-transparent">
+              KEITAの戦略的アプローチ
+            </span>
+          </h3>
           
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
             {concepts.map((concept, index) => (
-              <div key={index} className="flex items-center space-x-4">
-                <div className="w-12 h-12 bg-pink-500 rounded-full flex items-center justify-center text-white text-xl">
+              <div key={index} className="flex items-center space-x-4 bg-white/10 backdrop-blur-sm rounded-2xl p-4 hover:bg-white/20 transition-all duration-300">
+                <div className="w-14 h-14 bg-gradient-to-r from-purple-500 via-blue-500 to-pink-500 rounded-xl flex items-center justify-center text-white text-2xl shadow-lg">
                   {concept.icon}
                 </div>
-                <span className="font-bold text-gray-800 text-lg">{concept.text}</span>
+                <span className="font-bold text-white text-lg">{concept.text}</span>
               </div>
             ))}
           </div>
 
-          <p className="text-center text-gray-600 italic">
+          <p className="text-center text-black italic text-lg font-serif">
             ※KEITAが実践してきた、影響力構築と収益化を両立させる独自メソッド
           </p>
         </div>

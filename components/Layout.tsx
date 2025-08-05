@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
 import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline'
+import FixedBanners from './FixedBanners'
 
 interface LayoutProps {
   children: React.ReactNode
@@ -50,7 +51,7 @@ export default function Layout({ children }: LayoutProps) {
         }`}
       >
         <nav className="mx-auto max-w-7xl px-6 lg:px-8" aria-label="Top">
-          <div className="flex w-full items-center justify-between border-b border-gray-500/10 py-4">
+          <div className="flex w-full items-center justify-between border-b border-gray-500/10 py-0">
             <div className="flex items-center">
               <motion.a
                 whileHover={{ scale: 1.05 }}
@@ -61,18 +62,19 @@ export default function Layout({ children }: LayoutProps) {
                 }}
                 className="flex items-center space-x-3 cursor-pointer"
               >
-                <img 
-                  src="/images/buzzkings-logo.png" 
-                  alt="BuzzKings Logo" 
-                  className="h-10 w-10 object-contain"
+                <img
+                  src="/images/bb-logo.png"
+                  alt="BUZZLAB BB Logo"
+                  className="h-16 object-contain"
                 />
-                <img 
-                  src="/images/buzzkings-name.png" 
-                  alt="BuzzKings Name" 
-                  className="h-20 object-contain"
+                <img
+                  src="/images/buzzlabo-text.png"
+                  alt="BuzzLabo Text"
+                  className="h-16 object-contain"
                 />
               </motion.a>
             </div>
+            
             <div className="ml-10 hidden space-x-8 lg:block">
               {navigation.map((item) => (
                 <motion.a
@@ -89,45 +91,64 @@ export default function Layout({ children }: LayoutProps) {
                 </motion.a>
               ))}
             </div>
-            <div className="ml-8 lg:hidden">
+            
+            <div className="lg:hidden">
               <button
                 type="button"
-                className="inline-flex items-center justify-center rounded-md p-2 text-gray-400 hover:bg-gray-100 hover:text-gray-500"
-                onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+                className="-m-2.5 inline-flex items-center justify-center rounded-md p-2.5 text-gray-700"
+                onClick={() => setMobileMenuOpen(true)}
               >
-                <span className="sr-only">メニューを開く</span>
-                {mobileMenuOpen ? (
-                  <XMarkIcon className="h-6 w-6" aria-hidden="true" />
-                ) : (
-                  <Bars3Icon className="h-6 w-6" aria-hidden="true" />
-                )}
+                <span className="sr-only">Open main menu</span>
+                <Bars3Icon className="h-6 w-6" aria-hidden="true" />
               </button>
             </div>
           </div>
         </nav>
-
-        {/* Mobile menu */}
+        
         {mobileMenuOpen && (
           <motion.div
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -20 }}
-            className="lg:hidden bg-white/95 backdrop-blur-md"
+            transition={{ duration: 0.3 }}
+            className="lg:hidden fixed inset-0 z-40 bg-white/95 backdrop-blur-lg"
           >
-            <div className="space-y-1 px-6 py-4">
-              {navigation.map((item) => (
-                <a
-                  key={item.name}
-                  href={item.href}
-                  onClick={(e) => {
-                    e.preventDefault()
-                    scrollToSection(item.href)
-                  }}
-                  className="block rounded-md px-3 py-2 text-base font-medium text-gray-700 hover:bg-gray-50 hover:text-gray-900 cursor-pointer"
-                >
-                  {item.name}
-                </a>
-              ))}
+            <div className="flex items-center justify-between px-6 py-4 border-b border-gray-500/10">
+              <a href="#home" className="-m-1.5 p-1.5">
+                <span className="sr-only">BUZZLAB</span>
+                <img
+                  className="h-8 w-auto"
+                  src="/images/bb-logo.png"
+                  alt="BUZZLAB Logo"
+                />
+              </a>
+              <button
+                type="button"
+                className="-m-2.5 rounded-md p-2.5 text-gray-700"
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                <span className="sr-only">Close menu</span>
+                <XMarkIcon className="h-6 w-6" aria-hidden="true" />
+              </button>
+            </div>
+            <div className="mt-6 flow-root">
+              <div className="-my-6 divide-y divide-gray-500/10">
+                <div className="space-y-2 py-6 px-6">
+                  {navigation.map((item) => (
+                    <a
+                      key={item.name}
+                      href={item.href}
+                      onClick={(e) => {
+                        e.preventDefault()
+                        scrollToSection(item.href)
+                      }}
+                      className="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50"
+                    >
+                      {item.name}
+                    </a>
+                  ))}
+                </div>
+              </div>
             </div>
           </motion.div>
         )}
@@ -135,6 +156,9 @@ export default function Layout({ children }: LayoutProps) {
 
       {/* Main content */}
       <main>{children}</main>
+
+      {/* Fixed banners */}
+      <FixedBanners />
     </div>
   )
 }

@@ -19,7 +19,7 @@ const counselingFeatures = [
   {
     icon: ChatBubbleLeftRightIcon,
     title: '専門家による分析',
-    description: 'SNS×AIのプロフェッショナルが詳細分析',
+    description: 'SNSマーケティングのプロフェッショナルが詳細分析',
   },
   {
     icon: CalendarDaysIcon,
@@ -71,7 +71,7 @@ export default function CounselingSection() {
             無料カウンセリング
           </h2>
           <p className="text-xl text-white/80 max-w-3xl mx-auto">
-            あなたのビジネスに最適なSNS×AI戦略を、
+            あなたのビジネスに最適なSNSマーケティング戦略を、
             <br className="hidden md:block" />
             まずは無料で体験してみませんか？
           </p>

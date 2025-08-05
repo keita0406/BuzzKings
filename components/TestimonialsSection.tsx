@@ -15,7 +15,7 @@ const testimonials = [
     company: 'STYLE TOKYO',
     image: 'https://images.pexels.com/photos/3785079/pexels-photo-3785079.jpeg?auto=compress&cs=tinysrgb&w=400',
     rating: 5,
-    content: 'BuzzKingsのおかげで、たった3ヶ月でインスタグラムのフォロワーが10万人を突破しました。AI生成コンテンツの質の高さには本当に驚いています。売上も前年比300%アップを達成できました。',
+    content: 'BUZZLABのおかげで、たった3ヶ月でインスタグラムのフォロワーが10万人を突破しました。AI生成コンテンツの質の高さには本当に驚いています。売上も前年比300%アップを達成できました。',
     results: ['フォロワー数: 1万→10万', '売上: 300%向上', 'エンゲージメント率: 8.5%']
   },
   {
@@ -33,7 +33,7 @@ const testimonials = [
     company: 'FUSION DINING',
     image: 'https://images.pexels.com/photos/3799830/pexels-photo-3799830.jpeg?auto=compress&cs=tinysrgb&w=400',
     rating: 5,
-    content: '1つの動画が1億回再生を記録し、テレビや雑誌からも取材依頼が殺到しました。週末の来店数が2倍になり、予約が取れないほどの人気店になりました。BuzzKingsは本当に魔法のようです。',
+    content: '1つの動画が1億回再生を記録し、テレビや雑誌からも取材依頼が殺到しました。週末の来店数が2倍になり、予約が取れないほどの人気店になりました。BUZZLABは本当に魔法のようです。',
     results: ['動画再生: 1億回突破', '来店数: 2倍増加', 'メディア掲載: 100件以上']
   },
   {
@@ -71,7 +71,7 @@ export default function TestimonialsSection() {
             <span className="gradient-text">受講生の声</span>
           </h2>
           <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-            実際にBuzzKingsを利用したクライアントの成功体験
+            実際にBUZZLABを利用したクライアントの成功体験
           </p>
         </motion.div>
 
@@ -133,7 +133,7 @@ export default function TestimonialsSection() {
 
                   {/* Content */}
                   <blockquote className="text-gray-700 text-lg leading-relaxed mb-8 italic">
-                    "{testimonial.content}"
+                    &ldquo;{testimonial.content}&rdquo;
                   </blockquote>
 
                   {/* Results */}

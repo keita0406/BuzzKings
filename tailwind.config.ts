@@ -13,8 +13,8 @@ const config: Config = {
         'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
         'gradient-conic':
           'conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))',
-        'insta-gradient': 'linear-gradient(135deg, #f9ce34 0%, #ee2a7b 50%, #6228d7 100%)',
-        'insta-gradient-reverse': 'linear-gradient(135deg, #6228d7 0%, #ee2a7b 50%, #f9ce34 100%)',
+        'insta-gradient': 'linear-gradient(135deg, #8A2BE2 0%, #0066FF 50%, #FF1493 100%)',
+        'insta-gradient-reverse': 'linear-gradient(135deg, #FF1493 0%, #0066FF 50%, #8A2BE2 100%)',
       },
       borderRadius: {
         lg: 'var(--radius)',
@@ -63,9 +63,9 @@ const config: Config = {
           '5': 'hsl(var(--chart-5))',
         },
         instagram: {
-          yellow: '#f9ce34',
-          pink: '#ee2a7b',
-          purple: '#6228d7',
+          purple: '#8A2BE2',
+          blue: '#0066FF',
+          pink: '#FF1493',
         },
       },
       keyframes: {
@@ -90,8 +90,8 @@ const config: Config = {
           '50%': { transform: 'translateY(-20px)' },
         },
         'pulse-glow': {
-          '0%, 100%': { boxShadow: '0 0 20px rgba(249, 206, 52, 0.3)' },
-          '50%': { boxShadow: '0 0 30px rgba(238, 42, 123, 0.5)' },
+          '0%, 100%': { boxShadow: '0 0 20px rgba(138, 43, 226, 0.3)' },
+          '50%': { boxShadow: '0 0 30px rgba(255, 20, 147, 0.5)' },
         },
       },
       animation: {

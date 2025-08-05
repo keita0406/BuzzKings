@@ -94,7 +94,7 @@
 }
 
 ::-webkit-scrollbar-thumb {
-  background: linear-gradient(135deg, #f9ce34 0%, #ee2a7b 50%, #6228d7 100%);
+  background: linear-gradient(135deg, #8A2BE2 0%, #0066FF 50%, #FF1493 100%);
   border-radius: 4px;
 }
 
@@ -104,7 +104,7 @@
 
 /* Gradient text utility */
 .gradient-text {
-  background: linear-gradient(135deg, #f9ce34 0%, #ee2a7b 50%, #6228d7 100%);
+  background: linear-gradient(135deg, #8A2BE2 0%, #0066FF 50%, #FF1493 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
