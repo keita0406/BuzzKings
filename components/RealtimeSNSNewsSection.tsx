@@ -1,97 +1,95 @@
 'use client'
 
+import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
-import { ClockIcon, FireIcon, ArrowTrendingUpIcon } from '@heroicons/react/24/outline'
+import Link from 'next/link'
+import { ClockIcon, EyeIcon, TagIcon, CalendarIcon } from '@heroicons/react/24/outline'
+import { supabase } from '@/lib/supabase'
+import type { BlogPost } from '@/lib/supabase'
 
-const snsNews = [
-  {
-    platform: 'Instagram',
-    icon: '📸',
-    color: 'from-purple-500 to-pink-500',
-    news: [
-      {
-        title: 'リール動画のエンゲージメント率が前月比150%増加',
-        time: '2分前',
-        engagement: '1.2M',
-        trending: true
-      },
-      {
-        title: '音楽連動コンテンツが急上昇中',
-        time: '5分前',
-        engagement: '890K',
-        trending: false
-      }
-    ]
-  },
-  {
-    platform: 'TikTok',
-    icon: '🎵',
-    color: 'from-red-500 to-blue-500',
-    news: [
-      {
-        title: '#チャレンジ動画 が世界トレンド1位',
-        time: '1分前',
-        engagement: '2.8M',
-        trending: true
-      },
-      {
-        title: '15秒動画の完視聴率が85%達成',
-        time: '3分前',
-        engagement: '1.5M',
-        trending: true
-      }
-    ]
-  },
-  {
-    platform: 'YouTube',
-    icon: '📺',
-    color: 'from-red-600 to-red-400',
-    news: [
-      {
-        title: 'ショート動画の収益化が拡大',
-        time: '4分前',
-        engagement: '3.2M',
-        trending: true
-      },
-      {
-        title: 'AI生成サムネイルのクリック率向上',
-        time: '7分前',
-        engagement: '950K',
-        trending: false
-      }
-    ]
-  },
-  {
-    platform: 'Twitter(X)',
-    icon: '🐦',
-    color: 'from-blue-500 to-blue-300',
-    news: [
-      {
-        title: 'ライブツイートのリーチが200%増',
-        time: '30秒前',
-        engagement: '680K',
-        trending: true
-      },
-      {
-        title: 'スレッド投稿の効果的活用法が話題',
-        time: '6分前',
-        engagement: '420K',
-        trending: false
-      }
-    ]
+interface BlogPostWithCategory extends Omit<BlogPost, 'category'> {
+  category?: {
+    id: string
+    name: string
+    color: string
   }
-]
-
-const trendingHashtags = [
-  '#バズマーケティング',
-  '#SNS戦略',
-  '#リール攻略',
-  '#インフルエンサー',
-  '#動画編集',
-  '#AI活用'
-]
+}
 
 export default function RealtimeSNSNewsSection() {
+  const [posts, setPosts] = useState<BlogPostWithCategory[]>([])
+  const [isLoading, setIsLoading] = useState(true)
+
+  useEffect(() => {
+    fetchLatestPosts()
+  }, [])
+
+  const fetchLatestPosts = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('blog_posts')
+        .select(`
+          *,
+          category:blog_categories(
+            id,
+            name,
+            color
+          )
+        `)
+        .eq('status', 'published')
+        .order('published_at', { ascending: false })
+        .limit(6)
+
+      if (error) {
+        console.error('Error fetching posts:', error)
+        return
+      }
+
+      setPosts(data || [])
+    } catch (error) {
+      console.error('Error:', error)
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
+  const formatDate = (dateString: string) => {
+    const date = new Date(dateString)
+    const now = new Date()
+    const diffTime = Math.abs(now.getTime() - date.getTime())
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24))
+    
+    if (diffDays === 1) {
+      return '今日'
+    } else if (diffDays === 2) {
+      return '昨日'
+    } else if (diffDays <= 7) {
+      return `${diffDays - 1}日前`
+    } else {
+      return date.toLocaleDateString('ja-JP', {
+        month: 'short',
+        day: 'numeric'
+      })
+    }
+  }
+
+  const truncateText = (text: string, maxLength: number) => {
+    if (text.length <= maxLength) return text
+    return text.substring(0, maxLength) + '...'
+  }
+
+  if (isLoading) {
+    return (
+      <section className="py-24 bg-white">
+        <div className="max-w-7xl mx-auto px-6">
+          <div className="text-center">
+            <div className="w-16 h-16 border-4 border-purple-500/30 border-t-purple-500 rounded-full animate-spin mx-auto mb-4"></div>
+            <p className="text-gray-600">最新記事を読み込み中...</p>
+          </div>
+        </div>
+      </section>
+    )
+  }
+
   return (
     <section className="py-24 bg-white">
       <div className="max-w-7xl mx-auto px-6">
@@ -104,108 +102,110 @@ export default function RealtimeSNSNewsSection() {
         >
           <h2 className="text-5xl md:text-6xl lg:text-7xl font-bold mb-6">
             <span className="bg-gradient-to-r from-purple-500 via-blue-500 to-pink-500 bg-clip-text text-transparent">
-              リアルタイムSNSニュース
+              最新ブログ記事
             </span>
           </h2>
           <p className="text-xl text-gray-600 max-w-3xl mx-auto font-serif">
-            最新のSNSトレンドと市場動向をリアルタイムでお届け
+            SNSマーケティングの最新情報とノウハウをお届け
           </p>
         </motion.div>
 
-        {/* トレンドハッシュタグ */}
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.2 }}
-          viewport={{ once: true }}
-          className="mb-12"
-        >
-          <h3 className="text-2xl font-bold text-black mb-6 flex items-center">
-            <FireIcon className="h-7 w-7 text-orange-500 mr-3" />
-            トレンドハッシュタグ
-          </h3>
-          <div className="flex flex-wrap gap-3">
-            {trendingHashtags.map((hashtag, index) => (
-              <motion.span
-                key={hashtag}
-                initial={{ opacity: 0, scale: 0.8 }}
-                whileInView={{ opacity: 1, scale: 1 }}
-                transition={{ duration: 0.4, delay: index * 0.1 }}
-                viewport={{ once: true }}
-                whileHover={{ scale: 1.05 }}
-                className="bg-gradient-to-r from-purple-100 to-blue-100 border border-purple-300 rounded-full px-4 py-2 text-gray-800 hover:bg-gradient-to-r hover:from-purple-200 hover:to-blue-200 transition-all duration-300 cursor-pointer"
-              >
-                {hashtag}
-              </motion.span>
-            ))}
+        {posts.length === 0 ? (
+          <div className="text-center py-12">
+            <p className="text-gray-600 text-lg">まだ公開されている記事がありません。</p>
           </div>
-        </motion.div>
-
-        {/* SNSニュースグリッド */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-          {snsNews.map((platform, platformIndex) => (
-            <motion.div
-              key={platform.platform}
-              initial={{ opacity: 0, y: 50 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: platformIndex * 0.1 }}
-              viewport={{ once: true }}
-              className="bg-gray-50 rounded-3xl p-6 border border-gray-200 hover:bg-gray-100 transition-all duration-300 shadow-lg"
-            >
-              <div className="flex items-center mb-6">
-                <div className={`w-12 h-12 bg-gradient-to-r ${platform.color} rounded-xl flex items-center justify-center text-2xl mr-4`}>
-                  {platform.icon}
-                </div>
-                <h3 className="text-2xl font-bold text-black">{platform.platform}</h3>
-              </div>
-
-              <div className="space-y-4">
-                {platform.news.map((news, newsIndex) => (
-                  <motion.div
-                    key={newsIndex}
-                    initial={{ opacity: 0, x: -20 }}
-                    whileInView={{ opacity: 1, x: 0 }}
-                    transition={{ duration: 0.4, delay: (platformIndex * 0.1) + (newsIndex * 0.1) }}
+        ) : (
+          <>
+            {/* ブログ記事グリッド */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {posts.map((post, index) => (
+                <Link key={post.id} href={`/blog/${post.slug}`}>
+                  <motion.article
+                    initial={{ opacity: 0, y: 50 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.6, delay: index * 0.1 }}
                     viewport={{ once: true }}
-                    className="bg-white rounded-2xl p-4 hover:bg-gray-100 transition-all duration-300 border border-gray-100"
+                    whileHover={{ y: -10 }}
+                    className="bg-gradient-to-br from-white to-gray-50 rounded-2xl overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-100 group cursor-pointer"
                   >
-                    <div className="flex items-start justify-between mb-2">
-                      <h4 className="text-black font-semibold flex-1 mr-2">
-                        {news.title}
-                      </h4>
-                      {news.trending && (
-                        <ArrowTrendingUpIcon className="h-5 w-5 text-green-400 flex-shrink-0" />
+                    {/* サムネイル */}
+                    {post.thumbnail_url ? (
+                      <div className="relative h-48 overflow-hidden">
+                        <img
+                          src={post.thumbnail_url}
+                          alt={post.title}
+                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                        />
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent"></div>
+                      </div>
+                    ) : (
+                      <div className="h-48 bg-gradient-to-br from-purple-100 via-blue-100 to-pink-100 flex items-center justify-center">
+                        <div className="text-6xl opacity-30">📝</div>
+                      </div>
+                    )}
+
+                    {/* コンテンツ */}
+                    <div className="p-6">
+                      {/* カテゴリ */}
+                      {post.category && (
+                        <div className="mb-3">
+                          <span
+                            className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium text-white"
+                            style={{ backgroundColor: post.category.color }}
+                          >
+                            <TagIcon className="h-3 w-3 mr-1" />
+                            {post.category.name}
+                          </span>
+                        </div>
                       )}
-                    </div>
-                    <div className="flex items-center justify-between text-sm">
-                      <div className="flex items-center text-gray-500">
-                        <ClockIcon className="h-4 w-4 mr-1" />
-                        {news.time}
+
+                      {/* タイトル */}
+                      <h3 className="text-xl font-bold text-gray-900 mb-3 line-clamp-2 group-hover:text-purple-600 transition-colors duration-300">
+                        {post.title}
+                      </h3>
+
+                      {/* 概要 */}
+                      {post.excerpt && (
+                        <p className="text-gray-600 text-sm mb-4 line-clamp-3">
+                          {truncateText(post.excerpt, 120)}
+                        </p>
+                      )}
+
+                      {/* メタ情報 */}
+                      <div className="flex items-center justify-between text-xs text-gray-500">
+                        <div className="flex items-center">
+                          <CalendarIcon className="h-4 w-4 mr-1" />
+                          {post.published_at && formatDate(post.published_at)}
+                        </div>
+                        <div className="flex items-center">
+                          <EyeIcon className="h-4 w-4 mr-1" />
+                          記事を読む
+                        </div>
                       </div>
-                      <div className="text-purple-400 font-semibold">
-                        {news.engagement} エンゲージメント
-                      </div>
                     </div>
-                  </motion.div>
-                ))}
+
+                    {/* ホバーエフェクト */}
+                    <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-purple-500 via-blue-500 to-pink-500 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300"></div>
+                  </motion.article>
+                </Link>
+              ))}
+            </div>
+
+            {/* 更新インジケーター */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              whileInView={{ opacity: 1 }}
+              transition={{ duration: 0.8, delay: 0.6 }}
+              viewport={{ once: true }}
+              className="text-center mt-12"
+            >
+              <div className="inline-flex items-center bg-gradient-to-r from-green-100 to-emerald-100 border border-green-300 rounded-full px-6 py-3">
+                <div className="w-3 h-3 bg-green-500 rounded-full mr-3 animate-pulse"></div>
+                <span className="text-black font-semibold">最新記事を表示中</span>
               </div>
             </motion.div>
-          ))}
-        </div>
-
-        {/* ライブインジケーター */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          transition={{ duration: 0.8, delay: 0.6 }}
-          viewport={{ once: true }}
-          className="text-center mt-12"
-        >
-          <div className="inline-flex items-center bg-gradient-to-r from-green-100 to-emerald-100 border border-green-300 rounded-full px-6 py-3">
-            <div className="w-3 h-3 bg-green-500 rounded-full mr-3 animate-pulse"></div>
-            <span className="text-black font-semibold">リアルタイム更新中</span>
-          </div>
-        </motion.div>
+          </>
+        )}
       </div>
     </section>
   )
