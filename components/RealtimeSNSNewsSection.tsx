@@ -18,13 +18,35 @@ interface BlogPostWithCategory extends Omit<BlogPost, 'category'> {
 export default function RealtimeSNSNewsSection() {
   const [posts, setPosts] = useState<BlogPostWithCategory[]>([])
   const [isLoading, setIsLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
+    console.log('[DEBUG] RealtimeSNSNewsSection mounted, calling fetchLatestPosts...')
     fetchLatestPosts()
   }, [])
 
   const fetchLatestPosts = async () => {
     try {
+      console.log('[DEBUG] Starting fetchLatestPosts...')
+      console.log('[DEBUG] Supabase client:', supabase)
+      console.log('[DEBUG] Environment check:')
+      console.log('  - NEXT_PUBLIC_SUPABASE_URL:', process.env.NEXT_PUBLIC_SUPABASE_URL)
+      console.log('  - NEXT_PUBLIC_SUPABASE_ANON_KEY exists:', !!process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY)
+      console.log('  - window exists:', typeof window !== 'undefined')
+      
+      // Test if we're in browser environment
+      if (typeof window !== 'undefined') {
+        console.log('[DEBUG] Client-side environment variables from window:')
+        console.log('  - process.env.NODE_ENV:', process.env.NODE_ENV)
+        console.log('  - All env vars:', Object.keys(process.env))
+      }
+      
+      // Test the supabase client
+      console.log('[DEBUG] Testing supabase client methods:')
+      console.log('  - supabase.from:', typeof supabase.from)
+      
+      console.log('[DEBUG] About to make Supabase query...')
+      
       const { data, error } = await supabase
         .from('blog_posts')
         .select(`
@@ -39,43 +61,58 @@ export default function RealtimeSNSNewsSection() {
         .order('published_at', { ascending: false })
         .limit(6)
 
+      console.log('[DEBUG] Supabase query completed')
+      console.log('[DEBUG] Query result - data:', data)
+      console.log('[DEBUG] Query result - error:', error)
+      console.log('[DEBUG] Data type:', typeof data)
+      console.log('[DEBUG] Data length:', data?.length)
+
       if (error) {
-        console.error('Error fetching posts:', error)
+        console.error('[ERROR] Supabase query error:', error)
+        console.error('[ERROR] Error details:', {
+          message: error.message,
+          details: error.details,
+          hint: error.hint,
+          code: error.code
+        })
+        setError(`Supabaseエラー: ${error.message} (Code: ${error.code || 'N/A'})`)
         return
       }
 
+      if (!data) {
+        console.warn('[WARNING] No data returned from Supabase')
+        setError('データが取得できませんでした')
+        return
+      }
+
+      console.log('[DEBUG] Setting posts data:', data)
       setPosts(data || [])
     } catch (error) {
-      console.error('Error:', error)
+      console.error('[ERROR] Fetch error:', error)
+      console.error('[ERROR] Error stack:', error instanceof Error ? error.stack : 'No stack')
+      setError(`取得エラー: ${error instanceof Error ? error.message : String(error)}`)
     } finally {
+      console.log('[DEBUG] Setting isLoading to false')
       setIsLoading(false)
     }
   }
 
   const formatDate = (dateString: string) => {
     const date = new Date(dateString)
-    const now = new Date()
-    const diffTime = Math.abs(now.getTime() - date.getTime())
-    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24))
     
-    if (diffDays === 1) {
-      return '今日'
-    } else if (diffDays === 2) {
-      return '昨日'
-    } else if (diffDays <= 7) {
-      return `${diffDays - 1}日前`
-    } else {
-      return date.toLocaleDateString('ja-JP', {
-        month: 'short',
-        day: 'numeric'
-      })
-    }
+    return date.toLocaleDateString('ja-JP', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric'
+    })
   }
 
   const truncateText = (text: string, maxLength: number) => {
     if (text.length <= maxLength) return text
     return text.substring(0, maxLength) + '...'
   }
+
+  console.log('[DEBUG] Render state:', { isLoading, error, postsLength: posts.length })
 
   if (isLoading) {
     return (
@@ -84,6 +121,44 @@ export default function RealtimeSNSNewsSection() {
           <div className="text-center">
             <div className="w-16 h-16 border-4 border-purple-500/30 border-t-purple-500 rounded-full animate-spin mx-auto mb-4"></div>
             <p className="text-gray-600">最新記事を読み込み中...</p>
+            <div className="mt-4 text-sm text-gray-500">
+              <p>Debug Info:</p>
+              <p>Loading: {isLoading ? 'true' : 'false'}</p>
+              <p>Error: {error || 'none'}</p>
+              <p>Posts count: {posts.length}</p>
+              <p>Env URL: {process.env.NEXT_PUBLIC_SUPABASE_URL ? 'SET' : 'NOT SET'}</p>
+              <p>Env Key: {process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ? 'SET' : 'NOT SET'}</p>
+            </div>
+          </div>
+        </div>
+      </section>
+    )
+  }
+
+  if (error) {
+    return (
+      <section className="py-24 bg-white">
+        <div className="max-w-7xl mx-auto px-6">
+          <div className="text-center">
+            <div className="text-red-600 mb-4">
+              <h3 className="text-xl font-bold">エラーが発生しました</h3>
+              <p className="mt-2">{error}</p>
+              <div className="mt-4 text-sm">
+                <p>Environment Debug:</p>
+                <p>URL: {process.env.NEXT_PUBLIC_SUPABASE_URL || 'NOT SET'}</p>
+                <p>Key: {process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ? 'SET' : 'NOT SET'}</p>
+              </div>
+            </div>
+            <button 
+              onClick={() => {
+                setError(null)
+                setIsLoading(true)
+                fetchLatestPosts()
+              }}
+              className="bg-purple-600 text-white px-6 py-3 rounded-lg hover:bg-purple-700 transition-colors duration-300"
+            >
+              再試行
+            </button>
           </div>
         </div>
       </section>
@@ -113,6 +188,11 @@ export default function RealtimeSNSNewsSection() {
         {posts.length === 0 ? (
           <div className="text-center py-12">
             <p className="text-gray-600 text-lg">まだ公開されている記事がありません。</p>
+            <div className="mt-4 text-sm text-gray-500">
+              <p>Debug Info:</p>
+              <p>Posts loaded: {posts.length}</p>
+              <p>Loading state: {isLoading ? 'loading' : 'complete'}</p>
+            </div>
           </div>
         ) : (
           <>
@@ -201,7 +281,7 @@ export default function RealtimeSNSNewsSection() {
             >
               <div className="inline-flex items-center bg-gradient-to-r from-green-100 to-emerald-100 border border-green-300 rounded-full px-6 py-3">
                 <div className="w-3 h-3 bg-green-500 rounded-full mr-3 animate-pulse"></div>
-                <span className="text-black font-semibold">最新記事を表示中</span>
+                <span className="text-black font-semibold">最新記事を表示中 ({posts.length}件)</span>
               </div>
             </motion.div>
           </>

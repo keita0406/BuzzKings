@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
-import { supabase } from '@/lib/supabase'
+import { supabase, supabaseAdmin } from '@/lib/supabase'
 import { motion } from 'framer-motion'
 import dynamic from 'next/dynamic'
 import { 
@@ -62,7 +62,7 @@ export default function NewPost() {
     try {
       // カテゴリ取得
       console.log('カテゴリを読み込み中...')
-      const { data: categoriesData, error: categoriesError } = await supabase
+      const { data: categoriesData, error: categoriesError } = await supabaseAdmin
         .from('blog_categories')
         .select('*')
         .order('sort_order')
@@ -76,7 +76,7 @@ export default function NewPost() {
 
       // タグ取得
       console.log('タグを読み込み中...')
-      const { data: tagsData, error: tagsError } = await supabase
+      const { data: tagsData, error: tagsError } = await supabaseAdmin
         .from('blog_tags')
         .select('*')
         .order('name')
@@ -248,7 +248,7 @@ export default function NewPost() {
           } else {
             // 新しいタグを作成
             const tagSlug = generateSlug(tagName)
-            const { data: newTagData, error } = await supabase
+            const { data: newTagData, error } = await supabaseAdmin
               .from('blog_tags')
               .insert([{ name: tagName, slug: tagSlug }])
               .select()
@@ -289,7 +289,7 @@ export default function NewPost() {
     }
 
     // 新しいタグを作成
-    const { data: newTagData, error } = await supabase
+    const { data: newTagData, error } = await supabaseAdmin
       .from('blog_tags')
       .insert([{ name: newTag.trim(), slug: tagSlug }])
       .select()
@@ -330,7 +330,7 @@ export default function NewPost() {
 
       console.log('Uploading file:', { fileName, filePath, fileSize: file.size, fileType: file.type })
 
-      const { data, error: uploadError } = await supabase.storage
+      const { data, error: uploadError } = await supabaseAdmin.storage
         .from('blog-images')
         .upload(filePath, file, {
           cacheControl: '3600',
@@ -344,7 +344,7 @@ export default function NewPost() {
 
       console.log('Upload successful:', data)
 
-      const { data: { publicUrl } } = supabase.storage
+      const { data: { publicUrl } } = supabaseAdmin.storage
         .from('blog-images')
         .getPublicUrl(filePath)
 
@@ -378,39 +378,8 @@ export default function NewPost() {
 
     setIsSaving(true)
     try {
-      // 記事を保存
-      // スラッグの重複チェックと調整
-      let finalSlug = slug || generateSlug(title)
-      let slugCounter = 1
-      
-      // 既存のスラッグをチェック（406エラー対策）
-      while (true) {
-        const { data: existingPosts, error } = await supabase
-          .from('blog_posts')
-          .select('id')
-          .eq('slug', finalSlug)
-          .limit(1)
-        
-        // エラーが発生した場合は無視して続行
-        if (error) {
-          console.warn('Slug check error (ignored):', error)
-          break
-        }
-        
-        if (!existingPosts || existingPosts.length === 0) break
-        
-        // 重複している場合は番号を追加
-        const baseSlug = slug || generateSlug(title)
-        finalSlug = `${baseSlug}-${slugCounter}`
-        slugCounter++
-        
-        // 無限ループ防止
-        if (slugCounter > 100) {
-          console.warn('Slug generation reached limit, using random suffix')
-          finalSlug = `${baseSlug}-${Date.now()}`
-          break
-        }
-      }
+      // APIエンドポイント経由で記事を保存
+      const finalSlug = slug || generateSlug(title)
 
       const postData = {
         title: title.trim(),
@@ -421,30 +390,27 @@ export default function NewPost() {
         thumbnail_url: thumbnailUrl,
         status: publishStatus,
         category_id: categoryId || null,
-        published_at: publishStatus === 'published' ? new Date().toISOString() : null
+        published_at: publishStatus === 'published' ? new Date().toISOString() : null,
+        tags: selectedTags
       }
 
-      const { data: postResult, error: postError } = await supabase
-        .from('blog_posts')
-        .insert([postData])
-        .select()
-        .single()
+      console.log('送信データ:', postData)
 
-      if (postError) throw postError
+      const response = await fetch('/api/admin/create-post', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(postData)
+      })
 
-      // タグを関連付け
-      if (selectedTags.length > 0) {
-        const tagRelations = selectedTags.map(tagId => ({
-          post_id: postResult.id,
-          tag_id: tagId
-        }))
+      const result = await response.json()
 
-        const { error: tagError } = await supabase
-          .from('blog_post_tags')
-          .insert(tagRelations)
-
-        if (tagError) throw tagError
+      if (!response.ok) {
+        throw new Error(result.error || 'API request failed')
       }
+
+      console.log('作成成功:', result)
 
       alert(publishStatus === 'published' ? '記事を公開しました' : '下書きを保存しました')
       router.push('/admin/dashboard')

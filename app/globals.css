@@ -183,10 +183,67 @@
 
 .prose h2 {
   font-size: 1.875rem;
+  position: relative;
+  padding: 1rem 1rem 1rem 1.5rem;
+  margin-left: 0;
+  background-color: #f8fafc;
+  border-radius: 0.5rem;
+  border: 1px solid #e2e8f0;
+}
+
+.prose h2::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 4px;
+  background: linear-gradient(135deg, #8b5cf6 0%, #3b82f6 50%, #ec4899 100%);
+  border-radius: 2px 0 0 2px;
 }
 
 .prose h3 {
   font-size: 1.5rem;
+  position: relative;
+  padding-bottom: 0.75rem;
+  margin-bottom: 1.5rem;
+  color: #1f2937;
+  font-weight: 700;
+}
+
+.prose h3::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  height: 3px;
+  background: linear-gradient(90deg, #a855f7 0%, #3b82f6 50%, #ec4899 100%);
+  border-radius: 1.5px;
+}
+
+.prose h4 {
+  font-size: 1.25rem;
+  position: relative;
+  padding-left: 2rem;
+  margin-left: 0;
+  color: #1f2937;
+  font-weight: 600;
+  line-height: 1.4;
+}
+
+.prose h4::before {
+  content: '●';
+  position: absolute;
+  left: 0;
+  top: 0;
+  font-size: 1.125rem;
+  background: linear-gradient(135deg, #a855f7 0%, #3b82f6 50%, #ec4899 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  font-weight: bold;
+  line-height: inherit;
 }
 
 .prose p {
@@ -212,12 +269,39 @@
 .prose ul, .prose ol {
   margin-top: 1.25rem;
   margin-bottom: 1.25rem;
-  padding-left: 1.625rem;
+  padding-left: 0;
+  list-style: none;
 }
 
-.prose li {
-  margin-top: 0.5rem;
-  margin-bottom: 0.5rem;
+.prose ul li {
+  position: relative;
+  margin-top: 0.75rem;
+  margin-bottom: 0.75rem;
+  padding-left: 2rem;
+  line-height: 1.6;
+  color: #374151;
+}
+
+.prose ul li::before {
+  content: '●';
+  position: absolute;
+  left: 0;
+  top: 0;
+  font-size: 1rem;
+  background: linear-gradient(135deg, #a855f7 0%, #3b82f6 50%, #ec4899 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  font-weight: bold;
+  line-height: inherit;
+}
+
+.prose ol li {
+  margin-top: 0.75rem;
+  margin-bottom: 0.75rem;
+  padding-left: 1.625rem;
+  line-height: 1.6;
+  color: #374151;
 }
 
 .prose img {
@@ -284,4 +368,452 @@
   display: -webkit-box;
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 3;
+}
+
+.container {
+  @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
+}
+
+/* セクション固有のスタイル */
+.hero-section {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.achievements-section {
+  background: radial-gradient(circle at 30% 40%, rgba(120, 119, 198, 0.3), transparent 50%),
+              radial-gradient(circle at 80% 40%, rgba(255, 119, 198, 0.3), transparent 50%),
+              radial-gradient(circle at 40% 80%, rgba(120, 219, 255, 0.3), transparent 50%);
+}
+
+.services-section {
+  background: radial-gradient(circle at 50% 50%, rgba(139, 92, 246, 0.1), transparent 50%);
+}
+
+.counseling-section {
+  background: linear-gradient(135deg, rgba(139, 92, 246, 0.1) 0%, rgba(59, 130, 246, 0.1) 100%);
+}
+
+/* グリッチテキストエフェクト */
+.glitch {
+  position: relative;
+  display: inline-block;
+}
+
+.glitch::before,
+.glitch::after {
+  content: attr(data-text);
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: black;
+  color: white;
+  overflow: hidden;
+  animation: glitch 2s infinite;
+}
+
+.glitch::before {
+  left: 2px;
+  text-shadow: -2px 0 #ff00c1;
+  animation-delay: 1s;
+}
+
+.glitch::after {
+  left: -2px;
+  text-shadow: -2px 0 #00fff9, 2px 2px #ff00c1;
+  animation-delay: 0.5s;
+}
+
+@keyframes glitch {
+  0% { clip: rect(64px, 9999px, 66px, 0); }
+  5% { clip: rect(30px, 9999px, 36px, 0); }
+  10% { clip: rect(80px, 9999px, 85px, 0); }
+  15% { clip: rect(20px, 9999px, 25px, 0); }
+  20% { clip: rect(70px, 9999px, 75px, 0); }
+  25% { clip: rect(40px, 9999px, 45px, 0); }
+  30% { clip: rect(90px, 9999px, 95px, 0); }
+  35% { clip: rect(10px, 9999px, 15px, 0); }
+  40% { clip: rect(60px, 9999px, 65px, 0); }
+  45% { clip: rect(35px, 9999px, 40px, 0); }
+  50% { clip: rect(85px, 9999px, 90px, 0); }
+  55% { clip: rect(25px, 9999px, 30px, 0); }
+  60% { clip: rect(75px, 9999px, 80px, 0); }
+  65% { clip: rect(45px, 9999px, 50px, 0); }
+  70% { clip: rect(95px, 9999px, 100px, 0); }
+  75% { clip: rect(15px, 9999px, 20px, 0); }
+  80% { clip: rect(65px, 9999px, 70px, 0); }
+  85% { clip: rect(55px, 9999px, 60px, 0); }
+  90% { clip: rect(5px, 9999px, 10px, 0); }
+  95% { clip: rect(50px, 9999px, 55px, 0); }
+  100% { clip: rect(100px, 9999px, 105px, 0); }
+}
+
+/* 3Dテキストエフェクト */
+.text-3d {
+  color: #f5f5f5;
+  text-shadow: 
+    0 1px 0 #ccc,
+    0 2px 0 #c9c9c9,
+    0 3px 0 #bbb,
+    0 4px 0 #b9b9b9,
+    0 5px 0 #aaa,
+    0 6px 1px rgba(0,0,0,.1),
+    0 0 5px rgba(0,0,0,.1),
+    0 1px 3px rgba(0,0,0,.3),
+    0 3px 5px rgba(0,0,0,.2),
+    0 5px 10px rgba(0,0,0,.25),
+    0 10px 10px rgba(0,0,0,.2),
+    0 20px 20px rgba(0,0,0,.15);
+}
+
+/* アニメーション */
+@keyframes slideInFromLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-100%);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes slideInFromRight {
+  from {
+    opacity: 0;
+    transform: translateX(100%);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes slideInFromBottom {
+  from {
+    opacity: 0;
+    transform: translateY(100%);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideInFromTop {
+  from {
+    opacity: 0;
+    transform: translateY(-100%);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes zoomIn {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.7;
+  }
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+/* アニメーションクラス */
+.animate-slide-in-left {
+  animation: slideInFromLeft 0.8s ease-out;
+}
+
+.animate-slide-in-right {
+  animation: slideInFromRight 0.8s ease-out;
+}
+
+.animate-slide-in-bottom {
+  animation: slideInFromBottom 0.8s ease-out;
+}
+
+.animate-slide-in-top {
+  animation: slideInFromTop 0.8s ease-out;
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.6s ease-out;
+}
+
+.animate-zoom-in {
+  animation: zoomIn 0.6s ease-out;
+}
+
+.animate-pulse-slow {
+  animation: pulse 3s ease-in-out infinite;
+}
+
+.animate-float {
+  animation: float 3s ease-in-out infinite;
+}
+
+/* Hyperspeed Animation */
+.hyperspeed {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: -1;
+}
+
+.hyperspeed::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 1px;
+  height: 1px;
+  background: white;
+  border-radius: 50%;
+  box-shadow: 
+    0 0 0 1px rgba(255,255,255,0.8),
+    0 0 6px rgba(255,255,255,0.6),
+    0 0 12px rgba(255,255,255,0.4);
+  animation: hyperspeed 1s linear infinite;
+}
+
+@keyframes hyperspeed {
+  0% {
+    transform: translate(-50%, -50%) scale(0);
+    opacity: 1;
+  }
+  100% {
+    transform: translate(-50%, -50%) scale(2000);
+    opacity: 0;
+  }
+}
+
+/* グラデーションアニメーション */
+.gradient-bg {
+  background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
+  background-size: 400% 400%;
+  animation: gradientAnimation 15s ease infinite;
+}
+
+@keyframes gradientAnimation {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+/* ユーティリティクラス */
+.text-shadow {
+  text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+}
+
+.text-shadow-lg {
+  text-shadow: 4px 4px 8px rgba(0,0,0,0.15);
+}
+
+.border-gradient {
+  border: 2px solid transparent;
+  background: linear-gradient(white, white) padding-box,
+              linear-gradient(45deg, #667eea, #764ba2) border-box;
+}
+
+/* Orb用のスタイル */
+.orb {
+  position: fixed;
+  border-radius: 50%;
+  filter: blur(40px);
+  pointer-events: none;
+  opacity: 0.6;
+  animation: float 8s ease-in-out infinite;
+}
+
+.orb-1 {
+  top: 10%;
+  left: 10%;
+  width: 400px;
+  height: 400px;
+  background: radial-gradient(circle, rgba(139, 92, 246, 0.4) 0%, rgba(139, 92, 246, 0) 70%);
+  animation-delay: 0s;
+}
+
+.orb-2 {
+  top: 60%;
+  right: 10%;
+  width: 300px;
+  height: 300px;
+  background: radial-gradient(circle, rgba(236, 72, 153, 0.4) 0%, rgba(236, 72, 153, 0) 70%);
+  animation-delay: 2s;
+}
+
+.orb-3 {
+  bottom: 10%;
+  left: 50%;
+  width: 500px;
+  height: 500px;
+  background: radial-gradient(circle, rgba(59, 130, 246, 0.3) 0%, rgba(59, 130, 246, 0) 70%);
+  animation-delay: 4s;
+}
+
+/* スクロールバーのスタイル */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f5f9;
+}
+
+.dark ::-webkit-scrollbar-track {
+  background: #1f2937;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 4px;
+}
+
+.dark ::-webkit-scrollbar-thumb {
+  background: #4b5563;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
+.dark ::-webkit-scrollbar-thumb:hover {
+  background: #6b7280;
+}
+
+/* ブログコンテンツ用のMarkdownスタイル */
+.prose h2 {
+  @apply text-2xl font-bold mt-8 mb-4 text-gray-900 border-b border-gray-300 pb-2;
+  scroll-margin-top: 2rem;
+}
+
+.dark .prose h2 {
+  @apply text-white border-b border-purple-500/30;
+  background: linear-gradient(135deg, #fff 0%, #e5e7eb 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  position: relative;
+}
+
+.dark .prose h2::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, #8b5cf6 0%, #3b82f6 50%, #06b6d4 100%);
+  border-radius: 1px;
+}
+
+.prose h3 {
+  @apply text-xl font-semibold mt-6 mb-3 text-gray-800 dark:text-gray-100;
+  scroll-margin-top: 2rem;
+}
+
+.prose h4 {
+  @apply text-lg font-medium mt-4 mb-2 text-gray-700 dark:text-gray-200;
+  scroll-margin-top: 2rem;
+}
+
+.prose p {
+  @apply mb-4 text-gray-700 dark:text-gray-300 leading-relaxed;
+}
+
+.prose ul {
+  @apply mb-4 pl-6;
+}
+
+.prose li {
+  @apply mb-2 text-gray-700 dark:text-gray-300;
+}
+
+.prose li::marker {
+  @apply text-purple-600 dark:text-purple-400;
+}
+
+.prose strong {
+  @apply font-bold text-gray-900 dark:text-white;
+}
+
+.prose em {
+  @apply italic text-gray-600 dark:text-gray-400;
+}
+
+.prose blockquote {
+  @apply border-l-4 border-purple-500 pl-4 py-2 my-4 bg-gray-50 dark:bg-gray-800 text-gray-700 dark:text-gray-300 italic;
+}
+
+.prose code {
+  @apply bg-gray-100 dark:bg-gray-800 text-purple-600 dark:text-purple-400 px-1 py-0.5 rounded text-sm;
+}
+
+.prose pre {
+  @apply bg-gray-900 dark:bg-black text-gray-100 p-4 rounded-lg overflow-x-auto my-4;
+}
+
+.prose pre code {
+  @apply bg-transparent text-gray-100 p-0;
+}
+
+.prose table {
+  @apply border-collapse border border-gray-300 dark:border-gray-700 w-full my-4;
+}
+
+.prose th {
+  @apply border border-gray-300 dark:border-gray-700 bg-gray-100 dark:bg-gray-800 px-4 py-2 text-left font-semibold;
+}
+
+.prose td {
+  @apply border border-gray-300 dark:border-gray-700 px-4 py-2;
+}
+
+.prose a {
+  @apply text-purple-600 dark:text-purple-400 hover:text-purple-800 dark:hover:text-purple-300 underline transition-colors;
+}
+
+.prose hr {
+  @apply border-gray-300 dark:border-gray-700 my-8;
 }

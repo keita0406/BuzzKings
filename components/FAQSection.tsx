@@ -1,66 +1,43 @@
 'use client'
 
-import { motion } from 'framer-motion'
 import { Disclosure } from '@headlessui/react'
 import { ChevronDownIcon } from '@heroicons/react/24/outline'
+import { MotionDiv, ScrollToContactButton } from './ClientMotionWrapper'
 
-const faqs = [
-  {
-    question: 'BUZZLABのサービスを利用するのに、SNSの知識は必要ですか？',
-    answer: 'いいえ、SNSの専門知識は必要ありません。私たちが初心者の方にも分かりやすく、ステップバイステップでサポートいたします。効果的なコンテンツ制作から戦略立案まで、すべてお任せください。'
-  },
-  {
-    question: '結果が出るまでにどのくらい時間がかかりますか？',
-    answer: '多くのクライアント様が1-3ヶ月以内に明確な成果を実感されています。ただし、業界や現在の状況により個人差があります。無料カウンセリングで具体的な目標設定と予想される成果時期をお伝えします。'
-  },
-  {
-    question: 'どのSNSプラットフォームに対応していますか？',
-    answer: 'Instagramをメインに、TikTok、YouTube、Twitter（X）、Facebook、LinkedInなど、主要なSNSプラットフォーム全てに対応しています。お客様のビジネスに最適なプラットフォームをご提案いたします。'
-  },
-  {
-    question: '制作したSNSコンテンツの著作権はどうなりますか？',
-    answer: '制作されたコンテンツの著作権は100%お客様に帰属します。制作されたコンテンツは自由にご利用いただけ、商用利用も問題ありません。安心してご活用ください。'
-  },
-  {
-    question: '料金体系について教えてください',
-    answer: 'お客様のニーズに合わせた柔軟な料金プランをご用意しています。月額制のサブスクリプションプランから、単発のプロジェクトベースまで対応可能です。詳細は無料カウンセリングでご相談ください。'
-  },
-  {
-    question: 'サポート体制はどうなっていますか？',
-    answer: '専任のコンサルタントが付き、24時間体制でサポートいたします。緊急時の対応、定期的な戦略見直し、成果測定など、包括的なサポートを提供します。'
-  },
-  {
-    question: '他社との違いは何ですか？',
-    answer: '最大の違いは「データドリブン×クリエイティブ」の融合による最先端のアプローチです。単なるSNS運用代行ではなく、データ分析に基づいた戦略的なバズ創出を行います。また、実績に裏打ちされた確実な成果をお約束します。'
-  },
-  {
-    question: 'クライアントの業界に制限はありますか？',
-    answer: 'B2C、B2Bを問わず、あらゆる業界に対応しています。小売、飲食、美容、フィットネス、教育、IT、医療など、2,350社以上の実績があります。どのような業界でもお気軽にご相談ください。'
-  }
-]
+interface FAQ {
+  question: string
+  answer: string
+}
 
-export default function FAQSection() {
+interface FAQSectionProps {
+  faqs: FAQ[]
+}
+
+export default function FAQSection({ faqs }: FAQSectionProps) {
   return (
     <section id="faq" className="py-24 bg-gray-50">
       <div className="max-w-4xl mx-auto px-6">
-        <motion.div
-          initial={{ opacity: 0, y: 50 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8 }}
-          viewport={{ once: true }}
-          className="text-center mb-16"
-        >
-          <h2 className="text-4xl md:text-5xl font-bold mb-6">
-            <span className="gradient-text">よくある質問</span>
-          </h2>
-          <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-            BUZZLABについて、よくお寄せいただくご質問にお答えします
-          </p>
-        </motion.div>
+        {/* Section Header - SSR */}
+        <div className="text-center mb-16">
+          <MotionDiv
+            initial={{ opacity: 0, y: 50 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
+            viewport={{ once: true }}
+          >
+            <h2 className="text-4xl md:text-5xl font-bold mb-6">
+              <span className="gradient-text">よくある質問</span>
+            </h2>
+            <p className="text-xl text-gray-600">
+              BUZZLABについて、よくお寄せいただくご質問にお答えします
+            </p>
+          </MotionDiv>
+        </div>
 
+        {/* FAQs - SSR Content with Client Animations */}
         <div className="space-y-4">
           {faqs.map((faq, index) => (
-            <motion.div
+            <MotionDiv
               key={index}
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
@@ -69,57 +46,49 @@ export default function FAQSection() {
             >
               <Disclosure>
                 {({ open }) => (
-                  <motion.div
-                    whileHover={{ scale: 1.01 }}
-                    className="bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300"
-                  >
-                    <Disclosure.Button className="flex w-full justify-between items-center px-6 py-6 text-left focus:outline-none focus-visible:ring focus-visible:ring-purple-500 focus-visible:ring-opacity-75">
-                      <span className="text-lg font-semibold text-gray-900 pr-4">
-                        {faq.question}
-                      </span>
-                      <motion.div
-                        animate={{ rotate: open ? 180 : 0 }}
-                        transition={{ duration: 0.3 }}
-                      >
-                        <ChevronDownIcon className="h-6 w-6 text-gray-500 flex-shrink-0" />
-                      </motion.div>
+                  <div className="bg-white rounded-2xl shadow-lg overflow-hidden">
+                    <Disclosure.Button className="flex justify-between items-center w-full px-6 py-5 text-left text-lg font-semibold text-gray-900 hover:bg-gray-50 focus:outline-none focus-visible:ring focus-visible:ring-purple-500 focus-visible:ring-opacity-75 transition-colors duration-200">
+                      {/* Question - SEO重要 */}
+                      <span>{faq.question}</span>
+                      <ChevronDownIcon
+                        className={`${
+                          open ? 'rotate-180' : ''
+                        } w-5 h-5 text-purple-500 transition-transform duration-200`}
+                      />
                     </Disclosure.Button>
-                    <Disclosure.Panel className="px-6 pb-6">
-                      <motion.div
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        transition={{ duration: 0.3 }}
-                        className="text-gray-600 leading-relaxed border-t border-gray-100 pt-4"
-                      >
-                        {faq.answer}
-                      </motion.div>
+                    {/* Answer - SEO重要 */}
+                    <Disclosure.Panel className="px-6 pb-5 text-gray-600 leading-relaxed">
+                      {faq.answer}
                     </Disclosure.Panel>
-                  </motion.div>
+                  </div>
                 )}
               </Disclosure>
-            </motion.div>
+            </MotionDiv>
           ))}
         </div>
 
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.5 }}
-          viewport={{ once: true }}
-          className="text-center mt-16"
-        >
-          <p className="text-gray-600 mb-6">
-            その他のご質問がございましたら、お気軽にお問い合わせください
-          </p>
-          <motion.button
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            onClick={() => document.querySelector('#contact')?.scrollIntoView({ behavior: 'smooth' })}
-            className="bg-insta-gradient text-white px-8 py-4 rounded-full text-lg font-semibold shadow-lg hover:shadow-xl transition-all duration-300"
+        {/* Additional Help Section */}
+        <div className="text-center mt-16">
+          <MotionDiv
+            initial={{ opacity: 0, y: 50 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.6 }}
+            viewport={{ once: true }}
           >
-            お問い合わせ
-          </motion.button>
-        </motion.div>
+            <div className="bg-gradient-to-r from-purple-600 to-blue-600 rounded-2xl p-8 text-white">
+              <h3 className="text-2xl font-bold mb-4">
+                その他のご質問がございましたら、お気軽にお問い合わせください
+              </h3>
+              <ScrollToContactButton
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                className="bg-white text-purple-600 font-bold py-3 px-8 rounded-xl hover:bg-gray-100 transition-colors duration-300"
+              >
+                お問い合わせ
+              </ScrollToContactButton>
+            </div>
+          </MotionDiv>
+        </div>
       </div>
     </section>
   )

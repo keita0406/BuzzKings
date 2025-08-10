@@ -1,39 +1,33 @@
 'use client'
 
 import { motion } from 'framer-motion'
-import { 
-  CheckCircleIcon, 
-  CalendarDaysIcon, 
-  VideoCameraIcon, 
-  ChatBubbleLeftRightIcon,
-  ClockIcon,
-  GiftIcon 
-} from '@heroicons/react/24/outline'
+import { CheckCircleIcon, UserGroupIcon, DocumentChartBarIcon, PresentationChartLineIcon, GiftIcon, ArrowRightIcon } from '@heroicons/react/24/outline'
+import { ScrollToContactButton } from './ClientMotionWrapper'
 
-const counselingFeatures = [
+const features = [
   {
-    icon: VideoCameraIcon,
+    icon: UserGroupIcon,
     title: '1対1オンライン相談',
-    description: 'あなたの課題に特化した個別コンサルティング',
+    description: 'あなたの課題に特化した個別コンサルティング'
   },
   {
-    icon: ChatBubbleLeftRightIcon,
+    icon: DocumentChartBarIcon,
     title: '専門家による分析',
-    description: 'SNSマーケティングのプロフェッショナルが詳細分析',
+    description: 'SNSマーケティングのプロフェッショナルが詳細分析'
   },
   {
-    icon: CalendarDaysIcon,
+    icon: PresentationChartLineIcon,
     title: '戦略プラン提案',
-    description: 'あなただけのカスタム戦略を立案',
+    description: 'あなただけのカスタム戦略を立案'
   },
   {
     icon: GiftIcon,
     title: '特典資料プレゼント',
-    description: 'バズ攻略ガイド（非売品）を無料提供',
+    description: 'バズ攻略ガイド（非売品）を無料提供'
   }
 ]
 
-const counselingFlow = [
+const steps = [
   {
     step: '01',
     title: 'お申し込み',
@@ -58,8 +52,16 @@ const counselingFlow = [
 
 export default function CounselingSection() {
   return (
-    <section className="py-24 bg-insta-gradient">
-      <div className="max-w-7xl mx-auto px-6">
+    <section id="counseling" className="py-24 bg-gradient-to-br from-gray-900 via-purple-900 to-blue-900 relative overflow-hidden">
+      {/* Background Effects */}
+      <div className="absolute inset-0 opacity-20">
+        <div className="absolute top-0 left-0 w-96 h-96 bg-purple-500 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-pulse"></div>
+        <div className="absolute top-0 right-0 w-96 h-96 bg-blue-500 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-pulse" style={{ animationDelay: '2s' }}></div>
+        <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-96 h-96 bg-pink-500 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-pulse" style={{ animationDelay: '4s' }}></div>
+      </div>
+
+      <div className="max-w-7xl mx-auto px-6 relative z-10">
+        {/* Section Header */}
         <motion.div
           initial={{ opacity: 0, y: 50 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -70,7 +72,7 @@ export default function CounselingSection() {
           <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
             無料カウンセリング
           </h2>
-          <p className="text-xl text-white/80 max-w-3xl mx-auto">
+          <p className="text-xl text-white/80 max-w-3xl mx-auto leading-relaxed">
             あなたのビジネスに最適なSNSマーケティング戦略を、
             <br className="hidden md:block" />
             まずは無料で体験してみませんか？
@@ -78,25 +80,20 @@ export default function CounselingSection() {
         </motion.div>
 
         {/* Features Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-16">
-          {counselingFeatures.map((feature, index) => (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-16">
+          {features.map((feature, index) => (
             <motion.div
-              key={feature.title}
+              key={index}
               initial={{ opacity: 0, y: 50 }}
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: index * 0.1 }}
               viewport={{ once: true }}
-              whileHover={{ y: -10, scale: 1.05 }}
-              className="bg-white/10 backdrop-blur-sm rounded-2xl p-6 text-center border border-white/20"
+              className="bg-white/10 backdrop-blur-lg rounded-2xl p-6 border border-white/20 hover:bg-white/20 transition-all duration-300"
             >
-              <motion.div
-                whileHover={{ rotate: 360 }}
-                transition={{ duration: 0.6 }}
-                className="w-16 h-16 bg-white/20 rounded-2xl flex items-center justify-center mx-auto mb-4"
-              >
-                <feature.icon className="h-8 w-8 text-white" />
-              </motion.div>
-              <h3 className="text-lg font-semibold text-white mb-2">
+              <div className="w-12 h-12 bg-gradient-to-r from-purple-400 to-blue-400 rounded-xl flex items-center justify-center mb-4">
+                <feature.icon className="h-6 w-6 text-white" />
+              </div>
+              <h3 className="text-lg font-bold text-white mb-2">
                 {feature.title}
               </h3>
               <p className="text-white/70 text-sm">
@@ -106,50 +103,40 @@ export default function CounselingSection() {
           ))}
         </div>
 
-        {/* Flow Section */}
+        {/* Process Steps */}
         <motion.div
           initial={{ opacity: 0, y: 50 }}
           whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.3 }}
+          transition={{ duration: 0.8, delay: 0.4 }}
           viewport={{ once: true }}
-          className="bg-white/10 backdrop-blur-sm rounded-3xl p-8 md:p-12 mb-16 border border-white/20"
+          className="mb-16"
         >
-          <h3 className="text-2xl md:text-3xl font-bold text-white text-center mb-12">
+          <h3 className="text-3xl font-bold text-white text-center mb-12">
             カウンセリングの流れ
           </h3>
           
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-            {counselingFlow.map((item, index) => (
-              <motion.div
-                key={item.step}
-                initial={{ opacity: 0, x: -50 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.6, delay: index * 0.2 }}
-                viewport={{ once: true }}
-                className="text-center relative"
-              >
-                {/* Step number */}
-                <motion.div
-                  whileHover={{ scale: 1.1 }}
-                  className="w-16 h-16 bg-white rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg"
-                >
-                  <span className="text-2xl font-bold gradient-text">
-                    {item.step}
-                  </span>
-                </motion.div>
+            {steps.map((step, index) => (
+              <div key={index} className="relative">
+                <div className="bg-white/10 backdrop-blur-lg rounded-2xl p-6 border border-white/20 h-full">
+                  <div className="text-4xl font-bold text-purple-400 mb-4">
+                    {step.step}
+                  </div>
+                  <h4 className="text-lg font-bold text-white mb-2">
+                    {step.title}
+                  </h4>
+                  <p className="text-white/70 text-sm">
+                    {step.description}
+                  </p>
+                </div>
                 
-                {/* Connector line */}
-                {index < counselingFlow.length - 1 && (
-                  <div className="hidden lg:block absolute top-8 left-full w-full h-0.5 bg-white/30 transform -translate-y-1/2 z-0"></div>
+                {/* Arrow for larger screens */}
+                {index < steps.length - 1 && (
+                  <div className="hidden lg:block absolute top-1/2 -right-4 transform -translate-y-1/2 z-10">
+                    <ArrowRightIcon className="h-8 w-8 text-purple-400" />
+                  </div>
                 )}
-                
-                <h4 className="text-lg font-semibold text-white mb-2">
-                  {item.title}
-                </h4>
-                <p className="text-white/70 text-sm">
-                  {item.description}
-                </p>
-              </motion.div>
+              </div>
             ))}
           </div>
         </motion.div>
@@ -158,15 +145,14 @@ export default function CounselingSection() {
         <motion.div
           initial={{ opacity: 0, y: 50 }}
           whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.5 }}
+          transition={{ duration: 0.8, delay: 0.6 }}
           viewport={{ once: true }}
           className="text-center"
         >
-          <div className="bg-white/10 backdrop-blur-sm rounded-3xl p-8 md:p-12 border border-white/20">
-            <div className="flex items-center justify-center mb-6">
-              <ClockIcon className="h-8 w-8 text-white mr-3" />
-              <span className="text-2xl font-bold text-white">60分間完全無料</span>
-            </div>
+          <div className="bg-white/10 backdrop-blur-lg rounded-3xl p-8 md:p-12 border border-white/20">
+            <h3 className="text-3xl md:text-4xl font-bold text-white mb-4">
+              60分間完全無料
+            </h3>
             
             <p className="text-white/80 text-lg mb-8 max-w-2xl mx-auto">
               通常￥30,000相当のコンサルティングを、
@@ -175,14 +161,13 @@ export default function CounselingSection() {
             </p>
             
             <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-              <motion.button
+              <ScrollToContactButton
                 whileHover={{ scale: 1.05, boxShadow: "0 0 30px rgba(255,255,255,0.3)" }}
                 whileTap={{ scale: 0.95 }}
-                onClick={() => document.querySelector('#contact')?.scrollIntoView({ behavior: 'smooth' })}
                 className="bg-white text-gray-900 px-8 py-4 rounded-full text-lg font-semibold shadow-xl hover:shadow-2xl transition-all duration-300"
               >
                 今すぐ無料相談を予約
-              </motion.button>
+              </ScrollToContactButton>
               
               <div className="flex items-center text-white/70 text-sm">
                 <CheckCircleIcon className="h-5 w-5 mr-2" />

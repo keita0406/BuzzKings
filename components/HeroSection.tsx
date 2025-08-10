@@ -19,6 +19,11 @@ export default function HeroSection() {
 
   return (
     <section id="home" className="relative min-h-screen flex items-center justify-start overflow-hidden">
+      {/* SEO用 Invisible H1 - 検索エンジンとスクリーンリーダー用 */}
+      <h1 className="sr-only">
+        SNSで集客しませんか？効果的なSNSマーケティングでフォロワー増加と売上アップを実現 - 個人フォロワー20万人以上の実績を持つプロが教えるSNS集客術
+      </h1>
+
       {/* Black Background */}
       <div className="absolute inset-0 bg-black z-0"></div>
       

@@ -5,7 +5,10 @@ import { useParams, useRouter } from 'next/navigation'
 import { motion } from 'framer-motion'
 import { supabase } from '@/lib/supabase'
 import { BlogPost, BlogCategory } from '@/lib/supabase'
-import { CalendarIcon, TagIcon, ArrowLeftIcon, ShareIcon } from '@heroicons/react/24/outline'
+import { CalendarIcon, TagIcon, ShareIcon, ChevronDownIcon, ChevronUpIcon, ListBulletIcon, Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline'
+import { marked } from 'marked'
+import ContactSection from '@/components/ContactSection'
+import FixedBanners from '@/components/FixedBanners'
 
 interface BlogPostWithCategory extends Omit<BlogPost, 'category'> {
   category?: {
@@ -15,12 +18,34 @@ interface BlogPostWithCategory extends Omit<BlogPost, 'category'> {
   }
 }
 
+const navigation = [
+  { name: 'ホーム', href: '/' },
+  { name: 'サービス', href: '/#services' },
+  { name: '実績', href: '/#achievements' },
+  { name: 'よくある質問', href: '/#faq' },
+]
+
 export default function BlogDetailPage() {
   const params = useParams()
   const router = useRouter()
   const [post, setPost] = useState<BlogPostWithCategory | null>(null)
   const [isLoading, setIsLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
   const [relatedPosts, setRelatedPosts] = useState<BlogPostWithCategory[]>([])
+  const [tableOfContents, setTableOfContents] = useState<{id: string, text: string}[]>([])
+  const [tocOpen, setTocOpen] = useState(false)
+  const [processedContent, setProcessedContent] = useState<string>('')
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+  const [scrolled, setScrolled] = useState(false)
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setScrolled(window.scrollY > 50)
+    }
+
+    window.addEventListener('scroll', handleScroll)
+    return () => window.removeEventListener('scroll', handleScroll)
+  }, [])
 
   useEffect(() => {
     if (params.slug) {
@@ -28,113 +53,189 @@ export default function BlogDetailPage() {
     }
   }, [params.slug])
 
+  const scrollToSection = (href: string) => {
+    if (href === '/') {
+      router.push('/')
+      return
+    }
+    
+    if (href.startsWith('/#')) {
+      router.push(href)
+      return
+    }
+    
+    const element = document.querySelector(href)
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth' })
+    }
+    setMobileMenuOpen(false)
+  }
+
+  // Markdownをパースしつつ目次を生成する関数
+  const processContentAndGenerateTOC = (content: string) => {
+    console.log('[DEBUG] Original content:', content.substring(0, 200))
+    
+    // HTMLタグで囲まれている場合は、まずHTMLタグを除去
+    let cleanContent = content
+    
+    // <p>タグで囲まれたMarkdownを抽出
+    if (content.includes('<p>##')) {
+      cleanContent = content
+        .replace(/<p>/g, '\n')
+        .replace(/<\/p>/g, '\n')
+        .replace(/&nbsp;/g, ' ')
+        .replace(/&lt;/g, '<')
+        .replace(/&gt;/g, '>')
+        .replace(/&amp;/g, '&')
+        .trim()
+    }
+    
+    console.log('[DEBUG] Cleaned content:', cleanContent.substring(0, 200))
+    
+    // 目次用のH2要素を抽出
+    const h2Matches = cleanContent.match(/^## (.+)$/gm) || []
+    const toc = h2Matches.map((match, index) => {
+      const text = match.replace(/^## /, '').trim()
+      const id = `heading-${index + 1}`
+      return { id, text }
+    })
+    
+    console.log('[DEBUG] Generated TOC:', toc)
+    setTableOfContents(toc)
+    
+    // MarkdownをHTMLに変換（同期版）
+    marked.setOptions({
+      gfm: true,
+      breaks: true
+    })
+    
+    let htmlContent = marked.parse(cleanContent) as string
+    
+    // H2タグにIDを追加
+    toc.forEach((item, index) => {
+      const h2Pattern = new RegExp(`<h2>\\s*${item.text.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\s*</h2>`, 'i')
+      htmlContent = htmlContent.replace(h2Pattern, `<h2 id="${item.id}">${item.text}</h2>`)
+    })
+    
+    console.log('[DEBUG] Processed HTML content:', htmlContent.substring(0, 300))
+    setProcessedContent(htmlContent)
+    
+    return htmlContent
+  }
+
+  // コンテンツ処理用のuseEffect
+  useEffect(() => {
+    if (post?.content && !processedContent) {
+      processContentAndGenerateTOC(post.content)
+    }
+  }, [post?.content, processedContent])
+
   const fetchPost = async (slug: string) => {
     try {
+      console.log('[DEBUG] Fetching post with slug:', slug)
+      
       // 記事を取得
       const { data: postData, error: postError } = await supabase
         .from('blog_posts')
-        .select(`
-          *,
-          category:blog_categories(
-            id,
-            name,
-            color
-          )
-        `)
+        .select('*')
         .eq('slug', slug)
         .eq('status', 'published')
         .single()
 
       if (postError) {
-        console.error('Error fetching post:', postError)
+        console.error('[DEBUG] Post fetch error:', postError)
+        setError('記事が見つかりませんでした')
         return
       }
 
-      setPost(postData)
+      if (!postData) {
+        console.error('[DEBUG] No post data found')
+        setError('記事が見つかりませんでした')
+        return
+      }
+
+      // カテゴリ情報を別途取得
+      let categoryData = null
+      if (postData.category_id) {
+        const { data: cat } = await supabase
+          .from('blog_categories')
+          .select('id, name, color')
+          .eq('id', postData.category_id)
+          .single()
+        categoryData = cat
+      }
+
+      console.log('[DEBUG] Post fetched successfully:', postData.title)
+      setPost({
+        ...postData,
+        category: categoryData || undefined
+      } as BlogPostWithCategory)
 
       // 関連記事を取得（同じカテゴリから3件）
       if (postData.category_id) {
         const { data: relatedData } = await supabase
           .from('blog_posts')
-          .select(`
-            *,
-            category:blog_categories(
-              id,
-              name,
-              color
-            )
-          `)
+          .select('*')
           .eq('category_id', postData.category_id)
           .eq('status', 'published')
           .neq('id', postData.id)
-          .order('published_at', { ascending: false })
           .limit(3)
 
-        setRelatedPosts(relatedData || [])
+        if (relatedData) {
+          // 各関連記事のカテゴリ情報も取得
+          const relatedPostsWithCategory = await Promise.all(
+            relatedData.map(async (post) => {
+              let cat = null
+              if (post.category_id) {
+                const { data: categoryInfo } = await supabase
+                  .from('blog_categories')
+                  .select('id, name, color')
+                  .eq('id', post.category_id)
+                  .single()
+                cat = categoryInfo
+              }
+              return {
+                ...post,
+                category: cat || undefined
+              } as BlogPostWithCategory
+            })
+          )
+          setRelatedPosts(relatedPostsWithCategory)
+        }
       }
 
     } catch (error) {
-      console.error('Error:', error)
+      console.error('[DEBUG] Unexpected error:', error)
+      setError('記事の読み込み中にエラーが発生しました')
     } finally {
       setIsLoading(false)
     }
   }
 
-  const formatDate = (dateString: string) => {
-    const date = new Date(dateString)
-    const now = new Date()
-    const diffTime = Math.abs(now.getTime() - date.getTime())
-    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24))
-
-    if (diffDays === 1) return '今日'
-    if (diffDays === 2) return '昨日'
-    if (diffDays <= 7) return `${diffDays - 1}日前`
-    
-    return date.toLocaleDateString('ja-JP', {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric'
-    })
-  }
-
-  const handleShare = async () => {
-    if (navigator.share && post) {
-      try {
-        await navigator.share({
-          title: post.title,
-          text: post.excerpt || '',
-          url: window.location.href,
-        })
-      } catch (error) {
-        console.log('Share failed:', error)
-      }
-    } else if (post) {
-      // フォールバック: クリップボードにコピー
-      navigator.clipboard.writeText(window.location.href)
-      alert('URLをクリップボードにコピーしました')
+  // スムーススクロール関数
+  const scrollToHeading = (id: string) => {
+    const element = document.getElementById(id)
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth' })
     }
   }
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-600 mx-auto mb-4"></div>
-          <p className="text-gray-600">記事を読み込み中...</p>
-        </div>
+      <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center">
+        <div className="text-gray-900 dark:text-white text-xl">記事を読み込み中... (Slug: {params.slug})</div>
       </div>
     )
   }
 
-  if (!post) {
+  if (error || !post) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+      <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center">
         <div className="text-center">
-          <h1 className="text-2xl font-bold text-gray-900 mb-4">記事が見つかりません</h1>
-          <p className="text-gray-600 mb-8">お探しの記事は存在しないか、削除された可能性があります。</p>
-          <button
+          <h1 className="text-2xl text-gray-900 dark:text-white mb-4">{error || '記事が見つかりません'}</h1>
+          <button 
             onClick={() => router.push('/')}
-            className="bg-purple-600 text-white px-6 py-3 rounded-lg hover:bg-purple-700 transition-colors duration-300"
+            className="px-6 py-3 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors"
           >
             ホームに戻る
           </button>
@@ -144,163 +245,266 @@ export default function BlogDetailPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-white">
       {/* ヘッダー */}
-      <header className="bg-white shadow-sm border-b">
-        <div className="max-w-4xl mx-auto px-4 py-4">
-          <div className="flex items-center justify-between">
-            <button
-              onClick={() => router.back()}
-              className="flex items-center text-gray-600 hover:text-purple-600 transition-colors duration-300"
-            >
-              <ArrowLeftIcon className="h-5 w-5 mr-2" />
-              戻る
-            </button>
-            <button
-              onClick={handleShare}
-              className="flex items-center text-gray-600 hover:text-purple-600 transition-colors duration-300"
-            >
-              <ShareIcon className="h-5 w-5 mr-2" />
-              シェア
-            </button>
-          </div>
-        </div>
-      </header>
-
-      {/* メインコンテンツ */}
-      <main className="max-w-4xl mx-auto px-4 py-8">
-        <motion.article
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-          className="bg-white rounded-2xl shadow-lg overflow-hidden"
-        >
-          {/* サムネイル */}
-          {post.thumbnail_url && (
-            <div className="relative h-64 md:h-96 overflow-hidden">
-              <img
-                src={post.thumbnail_url}
-                alt={post.title}
-                className="w-full h-full object-cover"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
-            </div>
-          )}
-
-          <div className="p-6 md:p-8">
-            {/* カテゴリ */}
-            {post.category && (
-              <div className="mb-4">
-                <span
-                  className="inline-flex items-center px-4 py-2 rounded-full text-sm font-medium text-white"
-                  style={{ backgroundColor: post.category.color }}
-                >
-                  <TagIcon className="h-4 w-4 mr-2" />
-                  {post.category.name}
-                </span>
-              </div>
-            )}
-
-            {/* タイトル */}
-            <motion.h1
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.2 }}
-              className="text-3xl md:text-4xl font-bold text-gray-900 mb-4 leading-tight"
-            >
-              {post.title}
-            </motion.h1>
-
-            {/* メタ情報 */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.3 }}
-              className="flex items-center text-gray-500 mb-6 pb-6 border-b border-gray-200"
-            >
-              <CalendarIcon className="h-5 w-5 mr-2" />
-              <span className="text-sm">
-                {post.published_at && formatDate(post.published_at)}
-              </span>
-            </motion.div>
-
-            {/* 概要 */}
-            {post.excerpt && (
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: 0.4 }}
-                className="bg-gradient-to-r from-purple-50 to-blue-50 border-l-4 border-purple-500 p-6 mb-8 rounded-r-lg"
+      <motion.header
+        initial={{ y: -100, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ duration: 0.6 }}
+        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
+          scrolled
+            ? 'bg-white dark:bg-gray-800 backdrop-blur-md shadow-lg'
+            : 'bg-white dark:bg-gray-800 shadow-sm'
+        }`}
+      >
+        <nav className="mx-auto max-w-7xl px-6 lg:px-8" aria-label="Top">
+          <div className="flex w-full items-center justify-between border-b border-gray-500/10 dark:border-gray-700/50 py-0">
+            <div className="flex items-center">
+              <motion.a
+                whileHover={{ scale: 1.05 }}
+                href="/"
+                onClick={(e) => {
+                  e.preventDefault()
+                  router.push('/')
+                }}
+                className="flex items-center space-x-3 cursor-pointer"
               >
-                <p className="text-gray-700 font-medium leading-relaxed">
-                  {post.excerpt}
-                </p>
-              </motion.div>
-            )}
-
-            {/* 本文 */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.5 }}
-              className="prose prose-lg max-w-none"
-              dangerouslySetInnerHTML={{ __html: post.content }}
-            />
-          </div>
-        </motion.article>
-
-        {/* 関連記事 */}
-        {relatedPosts.length > 0 && (
-          <motion.section
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.7 }}
-            className="mt-12"
-          >
-            <h2 className="text-2xl font-bold text-gray-900 mb-6">関連記事</h2>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              {relatedPosts.map((relatedPost) => (
-                <motion.article
-                  key={relatedPost.id}
-                  whileHover={{ y: -5 }}
-                  className="bg-white rounded-xl shadow-lg overflow-hidden cursor-pointer group"
-                  onClick={() => router.push(`/blog/${relatedPost.slug}`)}
+                <img
+                  src="/images/bb-logo.png"
+                  alt="BUZZLAB BB Logo"
+                  className="h-16 object-contain"
+                />
+                <img
+                  src="/images/buzzlabo-text.png"
+                  alt="BuzzLabo Text"
+                  className="h-16 object-contain"
+                />
+              </motion.a>
+            </div>
+            
+            <div className="ml-10 hidden space-x-8 lg:block">
+              {navigation.map((item) => (
+                <motion.a
+                  key={item.name}
+                  whileHover={{ scale: 1.05 }}
+                  href={item.href}
+                  onClick={(e) => {
+                    e.preventDefault()
+                    scrollToSection(item.href)
+                  }}
+                  className="text-base font-medium text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white cursor-pointer transition-colors"
                 >
-                  {relatedPost.thumbnail_url ? (
-                    <div className="relative h-32 overflow-hidden">
-                      <img
-                        src={relatedPost.thumbnail_url}
-                        alt={relatedPost.title}
-                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                      />
-                    </div>
-                  ) : (
-                    <div className="h-32 bg-gradient-to-br from-purple-100 to-blue-100 flex items-center justify-center">
-                      <div className="text-4xl opacity-30">📝</div>
-                    </div>
-                  )}
-                  <div className="p-4">
-                    {relatedPost.category && (
-                      <span
-                        className="inline-block px-2 py-1 rounded-full text-xs font-medium text-white mb-2"
-                        style={{ backgroundColor: relatedPost.category.color }}
-                      >
-                        {relatedPost.category.name}
-                      </span>
-                    )}
-                    <h3 className="font-bold text-gray-900 mb-2 line-clamp-2 group-hover:text-purple-600 transition-colors duration-300">
-                      {relatedPost.title}
-                    </h3>
-                    <p className="text-gray-600 text-sm line-clamp-2">
-                      {relatedPost.excerpt}
-                    </p>
-                  </div>
-                </motion.article>
+                  {item.name}
+                </motion.a>
               ))}
             </div>
-          </motion.section>
+            
+            <div className="lg:hidden">
+              <button
+                type="button"
+                className="-m-2.5 inline-flex items-center justify-center rounded-md p-2.5 text-gray-700 dark:text-gray-300"
+                onClick={() => setMobileMenuOpen(true)}
+              >
+                <span className="sr-only">Open main menu</span>
+                <Bars3Icon className="h-6 w-6" aria-hidden="true" />
+              </button>
+            </div>
+          </div>
+        </nav>
+        
+        {mobileMenuOpen && (
+          <motion.div
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -20 }}
+            transition={{ duration: 0.3 }}
+            className="lg:hidden fixed inset-0 z-40 bg-white/95 dark:bg-gray-900/95 backdrop-blur-lg"
+          >
+            <div className="flex items-center justify-between px-6 py-4 border-b border-gray-500/10 dark:border-gray-700/50">
+              <a href="/" className="-m-1.5 p-1.5">
+                <span className="sr-only">BUZZLAB</span>
+                <img
+                  className="h-8 w-auto"
+                  src="/images/bb-logo.png"
+                  alt="BUZZLAB Logo"
+                />
+              </a>
+              <button
+                type="button"
+                className="-m-2.5 rounded-md p-2.5 text-gray-700 dark:text-gray-300"
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                <span className="sr-only">Close menu</span>
+                <XMarkIcon className="h-6 w-6" aria-hidden="true" />
+              </button>
+            </div>
+            <div className="mt-6 flow-root">
+              <div className="-my-6 divide-y divide-gray-500/10 dark:divide-gray-700/50">
+                <div className="space-y-2 py-6 px-6">
+                  {navigation.map((item) => (
+                    <a
+                      key={item.name}
+                      href={item.href}
+                      onClick={(e) => {
+                        e.preventDefault()
+                        scrollToSection(item.href)
+                      }}
+                      className="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-900 dark:text-white hover:bg-gray-50 dark:hover:bg-gray-800"
+                    >
+                      {item.name}
+                    </a>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </motion.div>
         )}
-      </main>
+      </motion.header>
+
+      {/* メインコンテンツ */}
+      <div className="pt-20">
+        {/* 記事ヘッダー */}
+        <header className="border-b border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800">
+          <div className="max-w-6xl mx-auto px-4 py-12">
+            <div className="space-y-6">
+              {post.category && (
+                <span 
+                  className="inline-block px-4 py-2 rounded-full text-sm font-medium"
+                  style={{ backgroundColor: post.category.color + '20', color: post.category.color }}
+                >
+                  {post.category.name}
+                </span>
+              )}
+              
+              <h1 className="text-4xl lg:text-5xl font-bold leading-tight text-gray-900 dark:text-white">{post.title}</h1>
+              
+              <div className="flex items-center space-x-6 text-gray-600 dark:text-gray-400">
+                <div className="flex items-center space-x-2">
+                  <CalendarIcon className="w-5 h-5" />
+                  <time>{new Date(post.published_at || post.created_at).toLocaleDateString('ja-JP')}</time>
+                </div>
+                
+                <button className="flex items-center space-x-2 hover:text-gray-900 dark:hover:text-white transition-colors">
+                  <ShareIcon className="w-5 h-5" />
+                  <span>シェア</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </header>
+
+        <div className="max-w-6xl mx-auto px-4 py-8">
+          <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
+            {/* 目次 (サイドバー) */}
+            <div className="lg:col-span-1">
+              <div className="sticky top-28">
+                {tableOfContents.length > 0 && (
+                  <div className="bg-white dark:bg-gray-800 rounded-lg p-6 shadow-sm border border-gray-200 dark:border-gray-700">
+                    <button
+                      onClick={() => setTocOpen(!tocOpen)}
+                      className="flex items-center justify-between w-full text-left text-lg font-semibold mb-4 lg:cursor-default"
+                    >
+                      <div className="flex items-center space-x-2">
+                        <ListBulletIcon className="w-5 h-5" />
+                        <span>目次</span>
+                      </div>
+                      <ChevronDownIcon className={`w-5 h-5 lg:hidden transition-transform ${tocOpen ? 'rotate-180' : ''}`} />
+                    </button>
+                    
+                    <div className={`${tocOpen ? 'block' : 'hidden'} lg:block space-y-2`}>
+                      {tableOfContents.map((item, index) => (
+                        <button
+                          key={index}
+                          onClick={() => scrollToHeading(item.id)}
+                          className="block w-full text-left text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors py-1 text-sm border-l-2 border-transparent hover:border-purple-500 pl-3"
+                        >
+                          {item.text}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* メインコンテンツ */}
+            <div className="lg:col-span-3">
+              <article className="bg-white dark:bg-gray-800 rounded-lg p-8 shadow-sm border border-gray-200 dark:border-gray-700">
+                {post.thumbnail_url && (
+                  <div className="mb-8">
+                    <img 
+                      src={post.thumbnail_url} 
+                      alt={post.title}
+                      className="w-full h-64 object-cover rounded-lg"
+                    />
+                  </div>
+                )}
+
+                {post.excerpt && (
+                  <div className="mb-8 p-4 bg-purple-50 dark:bg-purple-900/20 rounded-lg border-l-4 border-purple-500">
+                    <p className="text-gray-700 dark:text-gray-300 italic">{post.excerpt}</p>
+                  </div>
+                )}
+
+                <div 
+                  className="prose prose-lg prose-gray dark:prose-invert max-w-none"
+                  dangerouslySetInnerHTML={{ 
+                    __html: processedContent || post.content 
+                  }}
+                />
+              </article>
+
+              {/* 関連記事 */}
+              {relatedPosts.length > 0 && (
+                <section className="mt-12">
+                  <h2 className="text-2xl font-bold mb-6 text-gray-900 dark:text-white">関連記事</h2>
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    {relatedPosts.map((relatedPost) => (
+                      <motion.article
+                        key={relatedPost.id}
+                        whileHover={{ scale: 1.02 }}
+                        className="bg-white dark:bg-gray-800 rounded-lg overflow-hidden hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors cursor-pointer shadow-sm border border-gray-200 dark:border-gray-700"
+                        onClick={() => router.push(`/blog/${relatedPost.slug}`)}
+                      >
+                        {relatedPost.thumbnail_url && (
+                          <img 
+                            src={relatedPost.thumbnail_url} 
+                            alt={relatedPost.title}
+                            className="w-full h-32 object-cover"
+                          />
+                        )}
+                        <div className="p-4">
+                          <h3 className="font-semibold mb-2 line-clamp-2 text-gray-900 dark:text-white">{relatedPost.title}</h3>
+                          <p className="text-gray-600 dark:text-gray-400 text-sm line-clamp-2">{relatedPost.excerpt}</p>
+                          <div className="mt-3 flex items-center justify-between">
+                            {relatedPost.category && (
+                              <span 
+                                className="px-2 py-1 rounded text-xs"
+                                style={{ backgroundColor: relatedPost.category.color + '20', color: relatedPost.category.color }}
+                              >
+                                {relatedPost.category.name}
+                              </span>
+                            )}
+                            <time className="text-xs text-gray-500 dark:text-gray-400">
+                              {new Date(relatedPost.published_at || relatedPost.created_at).toLocaleDateString('ja-JP')}
+                            </time>
+                          </div>
+                        </div>
+                      </motion.article>
+                    ))}
+                  </div>
+                </section>
+              )}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* フッター */}
+      <ContactSection />
+
+      {/* Fixed banners */}
+      <FixedBanners />
     </div>
   )
 } 
