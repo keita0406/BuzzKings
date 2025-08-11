@@ -49,7 +49,7 @@ export default function AdminDashboard() {
         .order('created_at', { ascending: false })
 
       if (postsError) throw postsError
-      setPosts(postsData || [])
+      setPosts((postsData || []) as unknown as BlogPost[])
 
       // カテゴリ一覧を取得
       const { data: categoriesData, error: categoriesError } = await supabase
@@ -58,7 +58,7 @@ export default function AdminDashboard() {
         .order('sort_order')
 
       if (categoriesError) throw categoriesError
-      setCategories(categoriesData || [])
+      setCategories((categoriesData || []) as unknown as BlogCategory[])
 
     } catch (error) {
       console.error('Error loading data:', error)
@@ -271,12 +271,12 @@ export default function AdminDashboard() {
                       </div>
                     </td>
                     <td className="px-6 py-4">
-                      {post.category && (
+                      {(post as any).category && (
                         <span 
                           className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium text-white"
-                          style={{ backgroundColor: post.category.color }}
+                          style={{ backgroundColor: (post as any).category.color }}
                         >
-                          {post.category.name}
+                          {(post as any).category.name}
                         </span>
                       )}
                     </td>

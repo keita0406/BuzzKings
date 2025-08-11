@@ -1,7 +1,6 @@
 import Layout from '@/components/Layout'
 import HeroSection from '@/components/HeroSection'
 import StrengthsSection from '@/components/StrengthsSection'
-import HybridSNSSection from '@/components/HybridSNSSection'
 import ServicesSection from '@/components/ServicesSection'
 import AchievementsSection from '@/components/AchievementsSection'
 import FollowerGrowthSection from '@/components/FollowerGrowthSection'
@@ -23,28 +22,25 @@ export default async function Home() {
       {/* StrengthsSection - SSRでコンテンツ、アニメーションはクライアント */}
       <StrengthsSection strengths={pageData.strengths} />
       
-      {/* HybridSNSSection - クライアントサイド */}
-      <HybridSNSSection />
-      
-      {/* ServicesSection - SSRでコンテンツ（SEO重要）、アニメーションはクライアント */}
+      {/* ServicesSection - SSRでコンテンツ、アニメーションはクライアント */}
       <ServicesSection services={pageData.services} />
       
-      {/* AchievementsSection - SSRでコンテンツ（SEO重要）、アニメーションはクライアント */}
+      {/* AchievementsSection - SSRでコンテンツ、アニメーションはクライアント */}
       <AchievementsSection achievements={pageData.achievements} />
       
-      {/* FollowerGrowthSection - SSRでコンテンツ（SEO重要）、チャートはクライアント */}
+      {/* FollowerGrowthSection - SSRでコンテンツ、アニメーションはクライアント */}
       <FollowerGrowthSection 
         followerData={pageData.followerGrowth} 
         phases={pageData.growthPhases} 
       />
       
-      {/* RealtimeSNSNewsSection - クライアントサイド */}
+      {/* RealtimeSNSNewsSection - SSRでコンテンツ、アニメーションはクライアント */}
       <RealtimeSNSNewsSection />
       
       {/* CounselingSection - クライアントサイド */}
       <CounselingSection />
       
-      {/* FAQSection - SSRでコンテンツ（SEO重要）、アニメーションはクライアント */}
+      {/* FAQSection - SSRでコンテンツ、アニメーションはクライアント */}
       <FAQSection faqs={pageData.faqs} />
       
       {/* ContactSection - クライアントサイド */}

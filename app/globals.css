@@ -799,15 +799,42 @@
 }
 
 .prose table {
-  @apply border-collapse border border-gray-300 dark:border-gray-700 w-full my-4;
+  @apply w-full border-collapse border border-gray-300 dark:border-gray-600 my-6 overflow-hidden shadow-lg;
 }
 
 .prose th {
-  @apply border border-gray-300 dark:border-gray-700 bg-gray-100 dark:bg-gray-800 px-4 py-2 text-left font-semibold;
+  @apply border border-gray-300 dark:border-gray-600 px-4 py-4 font-bold text-white text-left;
+  background: linear-gradient(135deg, #8b5cf6 0%, #3b82f6 100%);
+  position: relative;
+}
+
+.prose th::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg, #a855f7 0%, #60a5fa 100%);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+}
+
+.prose th:hover::before {
+  opacity: 1;
 }
 
 .prose td {
-  @apply border border-gray-300 dark:border-gray-700 px-4 py-2;
+  @apply border border-gray-300 dark:border-gray-600 px-4 py-3 text-gray-900 dark:text-gray-100;
+}
+
+.prose tbody tr:nth-child(even) {
+  @apply bg-gray-50 dark:bg-gray-800;
+}
+
+.prose tbody tr:hover {
+  @apply bg-purple-50 dark:bg-purple-900/20;
 }
 
 .prose a {
@@ -816,4 +843,23 @@
 
 .prose hr {
   @apply border-gray-300 dark:border-gray-700 my-8;
+}
+
+/* Blog post bold text highlight (excluding headers) */
+.prose strong:not(h1 strong):not(h2 strong):not(h3 strong):not(h4 strong):not(h5 strong):not(h6 strong),
+.prose b:not(h1 b):not(h2 b):not(h3 b):not(h4 b):not(h5 b):not(h6 b) {
+  background: linear-gradient(180deg, transparent 0%, transparent 50%, rgba(255, 235, 59, 0.5) 50%, rgba(255, 235, 59, 0.7) 100%);
+  padding: 0.1em 0.2em;
+  margin: -0.1em -0.1em;
+  font-weight: 600;
+  position: relative;
+  color: #1f2937;
+  box-decoration-break: clone;
+  -webkit-box-decoration-break: clone;
+}
+
+.dark .prose strong:not(h1 strong):not(h2 strong):not(h3 strong):not(h4 strong):not(h5 strong):not(h6 strong),
+.dark .prose b:not(h1 b):not(h2 b):not(h3 b):not(h4 b):not(h5 b):not(h6 b) {
+  background: linear-gradient(180deg, transparent 0%, transparent 50%, rgba(255, 235, 59, 0.3) 50%, rgba(255, 235, 59, 0.5) 100%);
+  color: #f3f4f6;
 }

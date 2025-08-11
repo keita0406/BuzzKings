@@ -78,18 +78,18 @@ export default function EditPost() {
       if (postError) throw postError
 
       if (postData) {
-        setPost(postData)
-        setTitle(postData.title)
-        setSlug(postData.slug)
-        setContent(postData.content)
-        setExcerpt(postData.excerpt || '')
-        setMetaDescription(postData.meta_description || '')
-        setThumbnailUrl(postData.thumbnail_url || '')
-        setCategoryId(postData.category_id || '')
-        setStatus(postData.status)
+        setPost(postData as unknown as BlogPost)
+        setTitle((postData as any).title)
+        setSlug((postData as any).slug)
+        setContent((postData as any).content)
+        setExcerpt((postData as any).excerpt || '')
+        setMetaDescription((postData as any).meta_description || '')
+        setThumbnailUrl((postData as any).thumbnail_url || '')
+        setCategoryId((postData as any).category_id || '')
+        setStatus((postData as any).status)
         
         // 関連タグのIDを取得
-        const tagIds = postData.blog_post_tags?.map((pt: any) => pt.tag_id) || []
+        const tagIds = (postData as any).blog_post_tags?.map((pt: any) => pt.tag_id) || []
         setSelectedTags(tagIds)
       }
 
@@ -99,7 +99,7 @@ export default function EditPost() {
         .select('*')
         .order('sort_order')
 
-      if (categoriesData) setCategories(categoriesData)
+      if (categoriesData) setCategories(categoriesData as unknown as BlogCategory[])
 
       // タグ取得
       const { data: tagsData } = await supabase
@@ -107,7 +107,7 @@ export default function EditPost() {
         .select('*')
         .order('name')
 
-      if (tagsData) setTags(tagsData)
+      if (tagsData) setTags(tagsData as unknown as BlogTag[])
 
     } catch (error) {
       console.error('Error loading data:', error)

@@ -86,7 +86,7 @@ export default function RealtimeSNSNewsSection() {
       }
 
       console.log('[DEBUG] Setting posts data:', data)
-      setPosts(data || [])
+      setPosts((data || []) as unknown as BlogPost[])
     } catch (error) {
       console.error('[ERROR] Fetch error:', error)
       console.error('[ERROR] Error stack:', error instanceof Error ? error.stack : 'No stack')
@@ -206,11 +206,11 @@ export default function RealtimeSNSNewsSection() {
                     transition={{ duration: 0.6, delay: index * 0.1 }}
                     viewport={{ once: true }}
                     whileHover={{ y: -10 }}
-                    className="bg-gradient-to-br from-white to-gray-50 rounded-2xl overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-100 group cursor-pointer"
+                    className="bg-gradient-to-br from-white to-gray-50 overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-100 group cursor-pointer h-full flex flex-col"
                   >
                     {/* サムネイル */}
                     {post.thumbnail_url ? (
-                      <div className="relative h-48 overflow-hidden">
+                      <div className="relative h-48 overflow-hidden flex-shrink-0">
                         <img
                           src={post.thumbnail_url}
                           alt={post.title}
@@ -219,18 +219,18 @@ export default function RealtimeSNSNewsSection() {
                         <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent"></div>
                       </div>
                     ) : (
-                      <div className="h-48 bg-gradient-to-br from-purple-100 via-blue-100 to-pink-100 flex items-center justify-center">
+                      <div className="h-48 bg-gradient-to-br from-purple-100 via-blue-100 to-pink-100 flex items-center justify-center flex-shrink-0">
                         <div className="text-6xl opacity-30">📝</div>
                       </div>
                     )}
 
                     {/* コンテンツ */}
-                    <div className="p-6">
+                    <div className="p-6 flex-1 flex flex-col">
                       {/* カテゴリ */}
                       {post.category && (
                         <div className="mb-3">
                           <span
-                            className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium text-white"
+                            className="inline-flex items-center px-3 py-1 text-xs font-medium text-white"
                             style={{ backgroundColor: post.category.color }}
                           >
                             <TagIcon className="h-3 w-3 mr-1" />
@@ -246,18 +246,18 @@ export default function RealtimeSNSNewsSection() {
 
                       {/* 概要 */}
                       {post.excerpt && (
-                        <p className="text-gray-600 text-sm mb-4 line-clamp-3">
+                        <p className="text-gray-600 text-sm mb-4 line-clamp-3 flex-1">
                           {truncateText(post.excerpt, 120)}
                         </p>
                       )}
 
-                      {/* メタ情報 */}
-                      <div className="flex items-center justify-between text-xs text-gray-500">
-                        <div className="flex items-center">
+                      {/* メタ情報と記事を読むボタン */}
+                      <div className="flex items-center justify-between mt-auto">
+                        <div className="flex items-center text-xs text-gray-500">
                           <CalendarIcon className="h-4 w-4 mr-1" />
                           {post.published_at && formatDate(post.published_at)}
                         </div>
-                        <div className="flex items-center">
+                        <div className="bg-gradient-to-r from-purple-600 to-blue-600 text-white px-4 py-2 text-sm font-medium hover:from-purple-700 hover:to-blue-700 transition-all duration-300 flex items-center group-hover:shadow-lg">
                           <EyeIcon className="h-4 w-4 mr-1" />
                           記事を読む
                         </div>

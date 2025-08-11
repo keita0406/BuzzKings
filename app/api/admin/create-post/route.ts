@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
+import { generateAuthorSectionHTML } from '@/lib/authorData'
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!
 const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY!
@@ -79,11 +80,18 @@ export async function POST(request: NextRequest) {
       }
     }
 
+    // 監修者セクションを記事内容の最後に自動追加（重複チェック）
+    let contentWithAuthor = content
+    if (!content.includes('author-section') && !content.includes('監修者セクション')) {
+      const authorSectionHTML = generateAuthorSectionHTML()
+      contentWithAuthor = content + '\n\n' + authorSectionHTML
+    }
+
     // ブログ記事を作成
     const postData = {
       title,
       slug: finalSlug,
-      content,
+      content: contentWithAuthor,
       excerpt,
       meta_description,
       thumbnail_url,

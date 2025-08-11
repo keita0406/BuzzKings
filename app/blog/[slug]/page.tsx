@@ -9,6 +9,7 @@ import { CalendarIcon, TagIcon, ShareIcon, ChevronDownIcon, ChevronUpIcon, ListB
 import { marked } from 'marked'
 import ContactSection from '@/components/ContactSection'
 import FixedBanners from '@/components/FixedBanners'
+import AuthorSection from '@/components/AuthorSection'
 
 interface BlogPostWithCategory extends Omit<BlogPost, 'category'> {
   category?: {
@@ -79,7 +80,7 @@ export default function BlogDetailPage() {
     let cleanContent = content
     
     // <p>タグで囲まれたMarkdownを抽出
-    if (content.includes('<p>##')) {
+    if (content.includes('<p>##') || content.includes('<p>|')) {
       cleanContent = content
         .replace(/<p>/g, '\n')
         .replace(/<\/p>/g, '\n')
@@ -87,8 +88,18 @@ export default function BlogDetailPage() {
         .replace(/&lt;/g, '<')
         .replace(/&gt;/g, '>')
         .replace(/&amp;/g, '&')
+        .replace(/&quot;/g, '"')
+        .replace(/&#x27;/g, "'")
         .trim()
     }
+    
+    // テーブル専用の前処理: テーブル行間の空行を除去
+    // 複数回適用してすべてのテーブル行を連続させる
+    let previousContent;
+    do {
+      previousContent = cleanContent;
+      cleanContent = cleanContent.replace(/(\|[^\n]*\|)\n\n(\|[^\n]*\|)/g, '$1\n$2');
+    } while (cleanContent !== previousContent);
     
     console.log('[DEBUG] Cleaned content:', cleanContent.substring(0, 200))
     
@@ -142,9 +153,11 @@ export default function BlogDetailPage() {
         .eq('status', 'published')
         .single()
 
+      console.log('[DEBUG] Supabase query result:', { postData, postError })
+
       if (postError) {
         console.error('[DEBUG] Post fetch error:', postError)
-        setError('記事が見つかりませんでした')
+        setError(`記事が見つかりませんでした: ${postError.message}`)
         return
       }
 
@@ -157,11 +170,13 @@ export default function BlogDetailPage() {
       // カテゴリ情報を別途取得
       let categoryData = null
       if (postData.category_id) {
-        const { data: cat } = await supabase
+        console.log('[DEBUG] Fetching category for ID:', postData.category_id)
+        const { data: cat, error: categoryError } = await supabase
           .from('blog_categories')
           .select('id, name, color')
           .eq('id', postData.category_id)
           .single()
+        console.log('[DEBUG] Category fetch result:', { cat, categoryError })
         categoryData = cat
       }
 
@@ -223,7 +238,10 @@ export default function BlogDetailPage() {
   if (isLoading) {
     return (
       <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center">
-        <div className="text-gray-900 dark:text-white text-xl">記事を読み込み中... (Slug: {params.slug})</div>
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-4 border-purple-600 border-t-transparent mx-auto mb-4"></div>
+          <p className="text-gray-600 dark:text-gray-400">記事を読み込み中...</p>
+        </div>
       </div>
     )
   }
@@ -435,7 +453,7 @@ export default function BlogDetailPage() {
                     <img 
                       src={post.thumbnail_url} 
                       alt={post.title}
-                      className="w-full h-64 object-cover rounded-lg"
+                      className="w-full h-auto object-contain"
                     />
                   </div>
                 )}
@@ -453,6 +471,9 @@ export default function BlogDetailPage() {
                   }}
                 />
               </article>
+
+              {/* 監修者セクション */}
+              <AuthorSection />
 
               {/* 関連記事 */}
               {relatedPosts.length > 0 && (

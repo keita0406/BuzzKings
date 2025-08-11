@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation'
 import { supabase, supabaseAdmin } from '@/lib/supabase'
 import { motion } from 'framer-motion'
 import dynamic from 'next/dynamic'
+import QuillEditor from '@/components/QuillEditor'
 import { 
   ArrowLeftIcon, 
   PhotoIcon, 
@@ -18,12 +19,7 @@ import {
 import type { BlogCategory, BlogTag } from '@/lib/supabase'
 import { v4 as uuidv4 } from 'uuid'
 
-// React Quillを動的インポート（SSR回避）
-const ReactQuill = dynamic(() => import('react-quill'), { 
-  ssr: false,
-  loading: () => <div className="h-64 bg-gray-100 animate-pulse rounded-lg"></div>
-})
-import 'react-quill/dist/quill.snow.css'
+// Note: ReactQuillは QuillEditor コンポーネント内で動的インポートされています
 
 export default function NewPost() {
   const [title, setTitle] = useState('')
@@ -50,6 +46,8 @@ export default function NewPost() {
     loadData()
   }, [])
 
+
+
   const checkAuth = () => {
     const session = sessionStorage.getItem('admin_session')
     if (session !== 'true') {
@@ -71,7 +69,7 @@ export default function NewPost() {
         console.error('カテゴリ読み込みエラー:', categoriesError)
       } else {
         console.log('カテゴリデータ:', categoriesData)
-        setCategories(categoriesData || [])
+        setCategories((categoriesData as unknown as BlogCategory[]) || [])
       }
 
       // タグ取得
@@ -85,7 +83,7 @@ export default function NewPost() {
         console.error('タグ読み込みエラー:', tagsError)
       } else {
         console.log('タグデータ:', tagsData)
-        setTags(tagsData || [])
+        setTags((tagsData as unknown as BlogTag[]) || [])
       }
 
     } catch (error) {
@@ -240,7 +238,7 @@ export default function NewPost() {
         const newSelectedTags = [...selectedTags]
         
         for (const tagName of aiTags) {
-          const existingTag = tags.find(tag => tag.name === tagName)
+          const existingTag = tags.find(tag => (tag as BlogTag).name === tagName) as BlogTag
           if (existingTag) {
             if (!newSelectedTags.includes(existingTag.id)) {
               newSelectedTags.push(existingTag.id)
@@ -255,8 +253,8 @@ export default function NewPost() {
               .single()
 
             if (!error && newTagData) {
-              setTags([...tags, newTagData])
-              newSelectedTags.push(newTagData.id)
+              setTags([...tags, newTagData as unknown as BlogTag])
+              newSelectedTags.push((newTagData as unknown as BlogTag).id)
             }
           }
         }
@@ -279,7 +277,7 @@ export default function NewPost() {
     const tagSlug = generateSlug(newTag)
     
     // 既存タグチェック
-    const existingTag = tags.find(tag => tag.slug === tagSlug)
+    const existingTag = tags.find(tag => (tag as BlogTag).slug === tagSlug) as BlogTag
     if (existingTag) {
       if (!selectedTags.includes(existingTag.id)) {
         setSelectedTags([...selectedTags, existingTag.id])
@@ -296,8 +294,8 @@ export default function NewPost() {
       .single()
 
     if (!error && newTagData) {
-      setTags([...tags, newTagData])
-      setSelectedTags([...selectedTags, newTagData.id])
+      setTags([...tags, newTagData as unknown as BlogTag])
+      setSelectedTags([...selectedTags, (newTagData as unknown as BlogTag).id])
       setNewTag('')
     }
   }
@@ -438,15 +436,7 @@ export default function NewPost() {
     }
   }
 
-  const quillModules = {
-    toolbar: [
-      [{ 'header': [1, 2, 3, false] }],
-      ['bold', 'italic', 'underline', 'strike'],
-      [{ 'list': 'ordered'}, { 'list': 'bullet' }],
-      ['link', 'image'],
-      ['clean']
-    ],
-  }
+
 
   if (isLoading) {
     return (
@@ -595,15 +585,11 @@ export default function NewPost() {
             <label className="block text-sm font-medium text-gray-700 mb-2">
               記事本文 <span className="text-red-500">*</span>
             </label>
-            <div className="prose-editor">
-              <ReactQuill
-                value={content}
-                onChange={setContent}
-                modules={quillModules}
-                placeholder="記事の内容を入力してください..."
-                style={{ height: '400px', marginBottom: '50px' }}
-              />
-            </div>
+            <QuillEditor
+              value={content}
+              onChange={setContent}
+              placeholder="記事の内容を入力してください..."
+            />
           </motion.div>
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">

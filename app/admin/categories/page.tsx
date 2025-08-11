@@ -47,7 +47,7 @@ export default function CategoriesManager() {
         .order('sort_order')
 
       if (error) throw error
-      setCategories(data || [])
+      setCategories((data || []) as unknown as BlogCategory[])
     } catch (error) {
       console.error('Error loading categories:', error)
     } finally {

@@ -52,14 +52,7 @@ const steps = [
 
 export default function CounselingSection() {
   return (
-    <section id="counseling" className="py-24 bg-gradient-to-br from-gray-900 via-purple-900 to-blue-900 relative overflow-hidden">
-      {/* Background Effects */}
-      <div className="absolute inset-0 opacity-20">
-        <div className="absolute top-0 left-0 w-96 h-96 bg-purple-500 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-pulse"></div>
-        <div className="absolute top-0 right-0 w-96 h-96 bg-blue-500 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-pulse" style={{ animationDelay: '2s' }}></div>
-        <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-96 h-96 bg-pink-500 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-pulse" style={{ animationDelay: '4s' }}></div>
-      </div>
-
+    <section id="counseling" className="py-24 bg-white relative overflow-hidden">
       <div className="max-w-7xl mx-auto px-6 relative z-10">
         {/* Section Header */}
         <motion.div
@@ -69,10 +62,12 @@ export default function CounselingSection() {
           viewport={{ once: true }}
           className="text-center mb-16"
         >
-          <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
-            無料カウンセリング
+          <h2 className="text-4xl md:text-5xl font-bold mb-6">
+            <span className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+              無料カウンセリング
+            </span>
           </h2>
-          <p className="text-xl text-white/80 max-w-3xl mx-auto leading-relaxed">
+          <p className="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
             あなたのビジネスに最適なSNSマーケティング戦略を、
             <br className="hidden md:block" />
             まずは無料で体験してみませんか？
@@ -83,96 +78,116 @@ export default function CounselingSection() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-16">
           {features.map((feature, index) => (
             <motion.div
-              key={index}
+              key={feature.title}
               initial={{ opacity: 0, y: 50 }}
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: index * 0.1 }}
               viewport={{ once: true }}
-              className="bg-white/10 backdrop-blur-lg rounded-2xl p-6 border border-white/20 hover:bg-white/20 transition-all duration-300"
+              className="bg-gradient-to-br from-white to-gray-50 rounded-2xl p-8 shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-100 text-center group hover:-translate-y-2"
             >
-              <div className="w-12 h-12 bg-gradient-to-r from-purple-400 to-blue-400 rounded-xl flex items-center justify-center mb-4">
-                <feature.icon className="h-6 w-6 text-white" />
+              <div className="w-16 h-16 bg-gradient-to-r from-blue-600 to-purple-600 rounded-2xl flex items-center justify-center mb-6 mx-auto group-hover:scale-110 transition-transform duration-300">
+                <feature.icon className="h-8 w-8 text-white" />
               </div>
-              <h3 className="text-lg font-bold text-white mb-2">
+              <h3 className="text-xl font-bold text-gray-900 mb-4">
                 {feature.title}
               </h3>
-              <p className="text-white/70 text-sm">
+              <p className="text-gray-600 leading-relaxed">
                 {feature.description}
               </p>
             </motion.div>
           ))}
         </div>
 
-        {/* Process Steps */}
+        {/* Steps Section */}
         <motion.div
           initial={{ opacity: 0, y: 50 }}
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.4 }}
           viewport={{ once: true }}
-          className="mb-16"
+          className="text-center mb-16"
         >
-          <h3 className="text-3xl font-bold text-white text-center mb-12">
+          <h3 className="text-3xl md:text-4xl font-bold text-gray-900 mb-8">
             カウンセリングの流れ
           </h3>
           
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
             {steps.map((step, index) => (
-              <div key={index} className="relative">
-                <div className="bg-white/10 backdrop-blur-lg rounded-2xl p-6 border border-white/20 h-full">
-                  <div className="text-4xl font-bold text-purple-400 mb-4">
+              <motion.div
+                key={step.step}
+                initial={{ opacity: 0, scale: 0.8 }}
+                whileInView={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 0.6, delay: 0.6 + (index * 0.1) }}
+                viewport={{ once: true }}
+                className="relative"
+              >
+                <div className="bg-gradient-to-br from-white to-gray-50 rounded-2xl p-8 shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-100 group hover:-translate-y-2">
+                  <div className="text-6xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent mb-4">
                     {step.step}
                   </div>
-                  <h4 className="text-lg font-bold text-white mb-2">
+                  <h4 className="text-xl font-bold text-gray-900 mb-4">
                     {step.title}
                   </h4>
-                  <p className="text-white/70 text-sm">
+                  <p className="text-gray-600 leading-relaxed">
                     {step.description}
                   </p>
                 </div>
                 
-                {/* Arrow for larger screens */}
+                {/* Arrow for desktop */}
                 {index < steps.length - 1 && (
                   <div className="hidden lg:block absolute top-1/2 -right-4 transform -translate-y-1/2 z-10">
-                    <ArrowRightIcon className="h-8 w-8 text-purple-400" />
+                    <ArrowRightIcon className="h-8 w-8 text-blue-600" />
                   </div>
                 )}
-              </div>
+              </motion.div>
             ))}
           </div>
         </motion.div>
 
-        {/* CTA Section */}
+        {/* CTA */}
         <motion.div
           initial={{ opacity: 0, y: 50 }}
           whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.6 }}
+          transition={{ duration: 0.8, delay: 0.8 }}
           viewport={{ once: true }}
           className="text-center"
         >
-          <div className="bg-white/10 backdrop-blur-lg rounded-3xl p-8 md:p-12 border border-white/20">
-            <h3 className="text-3xl md:text-4xl font-bold text-white mb-4">
-              60分間完全無料
-            </h3>
+          <div className="bg-gradient-to-r from-blue-600 to-purple-600 rounded-2xl p-8 md:p-12 text-white shadow-2xl relative overflow-hidden">
+            {/* Background decorations */}
+            <div className="absolute top-0 left-0 w-32 h-32 bg-white/10 rounded-full -translate-x-16 -translate-y-16"></div>
+            <div className="absolute bottom-0 right-0 w-40 h-40 bg-purple-300/20 rounded-full translate-x-20 translate-y-20"></div>
             
-            <p className="text-white/80 text-lg mb-8 max-w-2xl mx-auto">
-              通常￥30,000相当のコンサルティングを、
-              <br className="hidden md:block" />
-              期間限定で無料提供中です
-            </p>
-            
-            <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-              <ScrollToContactButton
-                whileHover={{ scale: 1.05, boxShadow: "0 0 30px rgba(255,255,255,0.3)" }}
-                whileTap={{ scale: 0.95 }}
-                className="bg-white text-gray-900 px-8 py-4 rounded-full text-lg font-semibold shadow-xl hover:shadow-2xl transition-all duration-300"
-              >
-                今すぐ無料相談を予約
-              </ScrollToContactButton>
+            <div className="relative z-10">
+              <h3 className="text-3xl md:text-4xl font-bold mb-6">
+                今すぐ無料カウンセリングを予約
+              </h3>
+              <p className="text-xl mb-8 opacity-90 max-w-2xl mx-auto">
+                通常￥30,000相当のコンサルティングを完全無料で提供中。
+                <br className="hidden md:block" />
+                強引な営業は一切ありません。
+              </p>
               
-              <div className="flex items-center text-white/70 text-sm">
-                <CheckCircleIcon className="h-5 w-5 mr-2" />
-                <span>強引な営業は一切ありません</span>
+              <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-8">
+                <div className="flex items-center text-white">
+                  <CheckCircleIcon className="h-6 w-6 mr-2" />
+                  <span>60分間の個別相談</span>
+                </div>
+                <div className="flex items-center text-white">
+                  <CheckCircleIcon className="h-6 w-6 mr-2" />
+                  <span>特典資料プレゼント</span>
+                </div>
+                <div className="flex items-center text-white">
+                  <CheckCircleIcon className="h-6 w-6 mr-2" />
+                  <span>営業なし保証</span>
+                </div>
               </div>
+              
+              <ScrollToContactButton
+                className="bg-white text-blue-600 font-bold py-4 px-8 rounded-xl hover:bg-gray-100 transition-colors duration-300 text-lg"
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+              >
+                無料カウンセリングを予約する
+              </ScrollToContactButton>
             </div>
           </div>
         </motion.div>
