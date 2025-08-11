@@ -242,8 +242,8 @@ export default function EditPost() {
       .single()
 
     if (!error && newTagData) {
-      setTags([...tags, newTagData])
-      setSelectedTags([...selectedTags, newTagData.id])
+      setTags([...tags, newTagData as unknown as BlogTag])
+      setSelectedTags([...selectedTags, (newTagData as any).id])
       setNewTag('')
     }
   }
@@ -369,8 +369,8 @@ export default function EditPost() {
               .single()
 
             if (!error && newTagData) {
-              setTags([...tags, newTagData])
-              newSelectedTags.push(newTagData.id)
+              setTags([...tags, newTagData as unknown as BlogTag])
+              newSelectedTags.push((newTagData as any).id)
             }
           }
         }
