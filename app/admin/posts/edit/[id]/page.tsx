@@ -18,12 +18,7 @@ import {
 import type { BlogCategory, BlogTag, BlogPost } from '@/lib/supabase'
 import { v4 as uuidv4 } from 'uuid'
 
-// React Quillを動的インポート（SSR回避）
-const ReactQuill = dynamic(() => import('react-quill'), { 
-  ssr: false,
-  loading: () => <div className="h-64 bg-gray-100 animate-pulse rounded-lg"></div>
-})
-import 'react-quill/dist/quill.snow.css'
+// QuillEditorは一時的にtextareaに置換
 
 export default function EditPost() {
   const params = useParams()
@@ -695,12 +690,12 @@ export default function EditPost() {
               記事本文 <span className="text-red-500">*</span>
             </label>
             <div className="prose-editor">
-              <ReactQuill
+              <textarea
                 value={content}
-                onChange={setContent}
-                modules={quillModules}
+                onChange={(e) => setContent(e.target.value)}
                 placeholder="記事の内容を入力してください..."
-                style={{ height: '400px', marginBottom: '50px' }}
+                className="w-full h-96 p-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-vertical"
+                rows={20}
               />
             </div>
           </motion.div>

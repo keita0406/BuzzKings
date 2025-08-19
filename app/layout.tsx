@@ -29,7 +29,7 @@ export const metadata: Metadata = {
     siteName: 'BUZZLAB - SNS集客・マーケティング専門',
     images: [
       {
-        url: 'https://buzzlab8.jp/images/buzzkings-logo.png',
+        url: 'https://buzzlab8.jp/images/buzzlab-logo.png',
         width: 1200,
         height: 630,
         alt: 'BUZZLAB - SNSで集客しませんか？効果的なSNSマーケティング',
@@ -41,7 +41,7 @@ export const metadata: Metadata = {
     title: 'SNSで集客しませんか？効果的なSNSマーケティング | BUZZLAB',
     description: 'SNS集客のプロが教える効果的なSNSマーケティング。フォロワー増加と売上アップを実現。',
     creator: '@buzzlab_keita',
-    images: ['https://buzzlab8.jp/images/buzzkings-logo.png'],
+    images: ['https://buzzlab8.jp/images/buzzlab-logo.png'],
   },
   robots: {
     index: true,
@@ -86,7 +86,7 @@ export default function RootLayout({
         "url": "https://buzzlab8.jp",
         "logo": {
           "@type": "ImageObject",
-          "url": "https://buzzlab8.jp/images/buzzkings-logo.png",
+          "url": "https://buzzlab8.jp/images/buzzlab-logo.png",
           "width": 200,
           "height": 200
         },

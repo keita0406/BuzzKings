@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
-import { generateAuthorSectionHTML } from '@/lib/authorData'
+// import { generateAuthorSectionHTML } from '@/lib/authorData' // 監修者セクション自動追加を無効化
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!
 const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY!
@@ -81,11 +81,12 @@ export async function POST(request: NextRequest) {
     }
 
     // 監修者セクションを記事内容の最後に自動追加（重複チェック）
+    // ※ コンテンツ生成機能では監修者セクションを含めないため、この処理を無効化
     let contentWithAuthor = content
-    if (!content.includes('author-section') && !content.includes('監修者セクション')) {
-      const authorSectionHTML = generateAuthorSectionHTML()
-      contentWithAuthor = content + '\n\n' + authorSectionHTML
-    }
+    // if (!content.includes('author-section') && !content.includes('監修者セクション')) {
+    //   const authorSectionHTML = generateAuthorSectionHTML()
+    //   contentWithAuthor = content + '\n\n' + authorSectionHTML
+    // }
 
     // ブログ記事を作成
     const postData = {

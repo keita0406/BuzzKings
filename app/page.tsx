@@ -85,7 +85,7 @@ export async function generateMetadata() {
       locale: 'ja_JP',
       images: [
         {
-          url: 'https://buzzlab8.jp/images/buzzkings-logo.png',
+          url: 'https://buzzlab8.jp/images/buzzlab-logo.png',
           width: 1200,
           height: 630,
           alt: 'BUZZLAB - SNS × AI で「バズを制する者たち」',
@@ -96,7 +96,7 @@ export async function generateMetadata() {
       card: 'summary_large_image',
       title: pageData.metadata.title,
       description: pageData.metadata.description,
-      images: ['https://buzzlab8.jp/images/buzzkings-logo.png'],
+      images: ['https://buzzlab8.jp/images/buzzlab-logo.png'],
     },
     alternates: {
       canonical: 'https://buzzlab8.jp',

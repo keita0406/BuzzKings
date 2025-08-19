@@ -1,0 +1,41 @@
+# BuzzKings レリバンスエンジニアリング実装プロジェクト
+
+## プロジェクト概要
+BuzzKingsのSNSマーケティングサービスにレリバンスエンジニアリングを実装し、検索エンジンの数学的関連性計算に最適化されたコンテンツ構造を構築します。
+
+## 実装内容
+
+### 1. エンティティマップ
+- 主要エンティティ: BuzzKings, SNSマーケティング, 盛啓太
+- 関連エンティティ: Instagram, TikTok, YouTube, バズマーケティング, フォロワー増加
+
+### 2. セマンティックトリプル
+- Subject-Predicate-Object構造での関係性定義
+- JSON-LD構造化データでの実装
+
+### 3. トピッククラスター
+- Core Topic: SNSマーケティング
+- Pillar Pages: サービス別最適化ページ
+- Cluster Content: 各SNSプラットフォーム別専門コンテンツ
+
+### 4. ベクトル化準備
+- OpenAI Embeddings API連携
+- PostgreSQL PGVector拡張対応
+- コンテンツベクトル化システム
+
+## 実装フェーズ
+1. エンティティマップ構築
+2. セマンティックトリプル定義
+3. トピッククラスター設計
+4. 構造化データ実装
+5. ベクトル化システム構築
+6. Orbitwise類似ツール開発
+
+## ファイル構成
+- `/lib/relevance-engineering/` - RE実装メインディレクトリ
+- `/lib/vector-system/` - ベクトル化システム
+- `/lib/semantic-triples/` - セマンティックトリプル定義
+- `/lib/entity-mapping/` - エンティティマップ管理
+- `/lib/topic-clusters/` - トピッククラスター構造
+
+次のステップ: エンティティマップの作成

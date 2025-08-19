@@ -1,5 +1,6 @@
 'use client'
 
+import { useState } from 'react'
 import { motion } from 'framer-motion'
 import { ChevronDownIcon, ChatBubbleLeftRightIcon } from '@heroicons/react/24/outline'
 import ProfileCard from './ProfileCard'
@@ -7,14 +8,25 @@ import BlurText from './BlurText'
 import Hyperspeed from './Hyperspeed'
 import GradientText from './GradientText'
 import GlitchText from './GlitchText'
+import AIChatModal from './AIChatModal'
 
 export default function HeroSection() {
+  const [isAIChatOpen, setIsAIChatOpen] = useState(false)
+
   const scrollToServices = () => {
     document.querySelector('#services')?.scrollIntoView({ behavior: 'smooth' })
   }
 
   const handleAnimationComplete = () => {
     console.log('Animation completed!');
+  };
+
+  const openAIChat = () => {
+    setIsAIChatOpen(true)
+  };
+
+  const closeAIChat = () => {
+    setIsAIChatOpen(false)
   };
 
   return (
@@ -253,11 +265,7 @@ export default function HeroSection() {
               <motion.button
                 whileHover={{ scale: 1.05, boxShadow: "0 0 40px rgba(0,255,255,0.4)" }}
                 whileTap={{ scale: 0.95 }}
-                onClick={() => {
-                  // チャットボット機能を開く
-                  console.log('AIチャット相談を開始');
-                  // ここに実際のチャットボット開始ロジックを追加
-                }}
+                onClick={openAIChat}
                 className="bg-gradient-to-r from-cyan-500 to-purple-500 text-white px-6 sm:px-8 lg:px-10 py-3 sm:py-4 lg:py-5 rounded-full text-lg sm:text-xl font-bold shadow-2xl hover:shadow-3xl transition-all duration-300 text-center flex items-center gap-2 justify-center"
               >
                 <ChatBubbleLeftRightIcon className="h-5 w-5 sm:h-6 sm:w-6" />
@@ -305,6 +313,9 @@ export default function HeroSection() {
           <ChevronDownIcon className="h-8 w-8" />
         </motion.button>
       </motion.div>
+
+      {/* AI Chat Modal */}
+      <AIChatModal isOpen={isAIChatOpen} onClose={closeAIChat} />
     </section>
   )
 }
