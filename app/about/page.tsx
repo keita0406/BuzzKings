@@ -1,5 +1,62 @@
 
 
+// ISR（Incremental Static Regeneration）設定
+export const revalidate = 3600 // 1時間ごとに再生成
+
+// SSG用の静的パラメータ生成
+export async function generateStaticParams() {
+  return [{}] // Aboutページは単一ページなので空のオブジェクト
+}
+
+// SEO最適化のためのメタデータ生成（SSG）
+export async function generateMetadata() {
+  return {
+    title: 'About KEITA - Ace Dream LLC CEO / CMO 盛 啓太 | BUZZLAB',
+    description: '33歳、法人3社の代表取締役。年商3億円をわずか社員3名で達成。建設業からSNS専業への転身を経て、現在はAI × SNSの新領域に挑戦中。',
+    keywords: [
+      'KEITA',
+      '盛 啓太',
+      'Ace Dream LLC',
+      'SNS マーケティング',
+      '建設業',
+      'Instagram',
+      '縫製工場',
+      'ClothesArt',
+      'AI × SNS',
+      '地球黒字化経営'
+    ],
+    openGraph: {
+      title: 'About KEITA - Ace Dream LLC CEO / CMO 盛 啓太',
+      description: '33歳、法人3社の代表取締役。年商3億円をわずか社員3名で達成。',
+      url: 'https://buzzlab8.jp/about',
+      siteName: 'BUZZLAB',
+      type: 'profile',
+      locale: 'ja_JP',
+      images: [
+        {
+          url: 'https://buzzlab8.jp/images/keita-avatar-new.png',
+          width: 400,
+          height: 400,
+          alt: '盛 啓太（KEITA）プロフィール画像',
+        },
+      ],
+    },
+    twitter: {
+      card: 'summary',
+      title: 'About KEITA - Ace Dream LLC CEO / CMO 盛 啓太',
+      description: '33歳、法人3社の代表取締役。年商3億円をわずか社員3名で達成。',
+      images: ['https://buzzlab8.jp/images/keita-avatar-new.png'],
+    },
+    alternates: {
+      canonical: 'https://buzzlab8.jp/about',
+    },
+    robots: {
+      index: true,
+      follow: true,
+    },
+  }
+}
+
 const timeline = [
   {
     year: '高校卒業',

@@ -62,6 +62,33 @@ const nextConfig = {
             value: 'public, s-maxage=3600, stale-while-revalidate=86400'
           }
         ]
+      },
+      {
+        source: '/about',
+        headers: [
+          {
+            key: 'Cache-Control',
+            value: 'public, s-maxage=3600, stale-while-revalidate=86400'
+          }
+        ]
+      },
+      {
+        source: '/privacy',
+        headers: [
+          {
+            key: 'Cache-Control',
+            value: 'public, s-maxage=3600, stale-while-revalidate=86400'
+          }
+        ]
+      },
+      {
+        source: '/sustainable',
+        headers: [
+          {
+            key: 'Cache-Control',
+            value: 'public, s-maxage=3600, stale-while-revalidate=86400'
+          }
+        ]
       }
     ]
   }

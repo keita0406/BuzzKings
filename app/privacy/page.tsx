@@ -1,3 +1,49 @@
+// ISR（Incremental Static Regeneration）設定
+export const revalidate = 3600 // 1時間ごとに再生成
+
+// SSG用の静的パラメータ生成
+export async function generateStaticParams() {
+  return [{}] // Privacyページは単一ページなので空のオブジェクト
+}
+
+// SEO最適化のためのメタデータ生成（SSG）
+export async function generateMetadata() {
+  return {
+    title: 'プライバシーポリシー - 個人情報保護方針 | BUZZLAB',
+    description: 'Ace Dream LLCの個人情報保護に関する取り組みとプライバシーポリシー。SNSマーケティング事業における個人情報の適切な管理と法的コンプライアンスについて。',
+    keywords: [
+      'プライバシーポリシー',
+      '個人情報保護',
+      'BUZZLAB',
+      'Ace Dream LLC',
+      'データ保護',
+      '法的コンプライアンス',
+      'SNSマーケティング',
+      '個人情報管理'
+    ],
+    openGraph: {
+      title: 'プライバシーポリシー - 個人情報保護方針 | BUZZLAB',
+      description: 'Ace Dream LLCの個人情報保護に関する取り組みとプライバシーポリシー。',
+      url: 'https://buzzlab8.jp/privacy',
+      siteName: 'BUZZLAB',
+      type: 'website',
+      locale: 'ja_JP',
+    },
+    twitter: {
+      card: 'summary',
+      title: 'プライバシーポリシー - 個人情報保護方針 | BUZZLAB',
+      description: 'Ace Dream LLCの個人情報保護に関する取り組みとプライバシーポリシー。',
+    },
+    alternates: {
+      canonical: 'https://buzzlab8.jp/privacy',
+    },
+    robots: {
+      index: true,
+      follow: true,
+    },
+  }
+}
+
 export default function Privacy() {
   return (
     <div className="max-w-4xl mx-auto px-6 py-12 text-gray-900">

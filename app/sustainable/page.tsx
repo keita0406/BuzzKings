@@ -1,3 +1,51 @@
+// ISR（Incremental Static Regeneration）設定
+export const revalidate = 3600 // 1時間ごとに再生成
+
+// SSG用の静的パラメータ生成
+export async function generateStaticParams() {
+  return [{}] // Sustainableページは単一ページなので空のオブジェクト
+}
+
+// SEO最適化のためのメタデータ生成（SSG）
+export async function generateMetadata() {
+  return {
+    title: 'サステナブル - 地球黒字化経営への取り組み | BUZZLAB',
+    description: '栗山縫製グループとの協業による地球黒字化経営の実践。持続可能な社会の実現に向けて、廃棄物削減と循環型社会の構築に取り組んでいます。',
+    keywords: [
+      'サステナブル',
+      '地球黒字化経営',
+      '栗山縫製',
+      '持続可能',
+      '環境配慮',
+      '循環型社会',
+      '廃棄物削減',
+      'SDGs',
+      'BUZZLAB',
+      'Ace Dream LLC'
+    ],
+    openGraph: {
+      title: 'サステナブル - 地球黒字化経営への取り組み | BUZZLAB',
+      description: '栗山縫製グループとの協業による地球黒字化経営の実践。持続可能な社会の実現に向けた取り組み。',
+      url: 'https://buzzlab8.jp/sustainable',
+      siteName: 'BUZZLAB',
+      type: 'website',
+      locale: 'ja_JP',
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: 'サステナブル - 地球黒字化経営への取り組み | BUZZLAB',
+      description: '栗山縫製グループとの協業による地球黒字化経営の実践。',
+    },
+    alternates: {
+      canonical: 'https://buzzlab8.jp/sustainable',
+    },
+    robots: {
+      index: true,
+      follow: true,
+    },
+  }
+}
+
 export default function Sustainable() {
   return (
     <div className="max-w-4xl mx-auto px-6 py-12 text-gray-900">
