@@ -10,7 +10,15 @@ import FAQSection from '@/components/FAQSection'
 import ContactSection from '@/components/ContactSection'
 import { getPageData } from '@/lib/staticData'
 
-// ページデータを事前にサーバーサイドで取得（SEOに重要なコンテンツ）
+// ISR（Incremental Static Regeneration）設定
+export const revalidate = 3600 // 1時間ごとに再生成
+
+// SSG用の静的パラメータ生成
+export async function generateStaticParams() {
+  return [{}] // ホームページは単一ページなので空のオブジェクト
+}
+
+// ページデータを事前にビルド時に取得（SSG/ISR）
 export default async function Home() {
   const pageData = await getPageData()
 
@@ -19,28 +27,28 @@ export default async function Home() {
       {/* HeroSection - クライアントサイド（アニメーション重視） */}
       <HeroSection />
       
-      {/* StrengthsSection - SSRでコンテンツ、アニメーションはクライアント */}
+      {/* StrengthsSection - SSGでコンテンツ、アニメーションはクライアント */}
       <StrengthsSection strengths={pageData.strengths} />
       
-      {/* ServicesSection - SSRでコンテンツ、アニメーションはクライアント */}
+      {/* ServicesSection - SSGでコンテンツ、アニメーションはクライアント */}
       <ServicesSection services={pageData.services} />
       
-      {/* AchievementsSection - SSRでコンテンツ、アニメーションはクライアント */}
+      {/* AchievementsSection - SSGでコンテンツ、アニメーションはクライアント */}
       <AchievementsSection achievements={pageData.achievements} />
       
-      {/* FollowerGrowthSection - SSRでコンテンツ、アニメーションはクライアント */}
+      {/* FollowerGrowthSection - SSGでコンテンツ、アニメーションはクライアント */}
       <FollowerGrowthSection 
         followerData={pageData.followerGrowth} 
         phases={pageData.growthPhases} 
       />
       
-      {/* RealtimeSNSNewsSection - SSRでコンテンツ、アニメーションはクライアント */}
+      {/* RealtimeSNSNewsSection - SSGでコンテンツ、アニメーションはクライアント */}
       <RealtimeSNSNewsSection />
       
       {/* CounselingSection - クライアントサイド */}
       <CounselingSection />
       
-      {/* FAQSection - SSRでコンテンツ、アニメーションはクライアント */}
+      {/* FAQSection - SSGでコンテンツ、アニメーションはクライアント */}
       <FAQSection faqs={pageData.faqs} />
       
       {/* ContactSection - クライアントサイド */}

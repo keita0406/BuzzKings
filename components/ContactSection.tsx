@@ -29,14 +29,14 @@ const contactInfo = [
   {
     icon: PhoneIcon,
     title: '電話',
-    content: '03-1234-5678',
+    content: '080-4240-4803',
     description: '平日 9:00-18:00'
   },
   {
     icon: MapPinIcon,
     title: 'オフィス',
-    content: '東京都渋谷区',
-    description: 'オンライン対応可'
+    content: '兵庫県西宮市甲子園七番町9−18',
+    description: 'H2Oビル２F'
   }
 ]
 
@@ -123,9 +123,9 @@ export default function ContactSection() {
             <span className="gradient-text">お問い合わせ</span>
           </h2>
           <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-            まずは無料カウンセリングから始めませんか？
+            無料カウンセリングから始めて、あなたのビジネスに最適なSNS戦略をご提案します。
             <br />
-            あなたのビジネスを次のレベルへ導くお手伝いをいたします
+            まずはお気軽にお問い合わせください。
           </p>
         </motion.div>
 

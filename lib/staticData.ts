@@ -180,11 +180,18 @@ export const strengthsData = [
   }
 ]
 
-// データ取得関数
+// SSG/ISR対応のデータ取得関数
 export async function getPageData() {
-  // 実際のAPIコールやデータベースアクセスの代わりに静的データを返す
+  // SSG時にビルド時に実行される静的データの取得
+  // ISR使用時は指定した間隔で再生成される
+  
   // 将来的にはここでSupabaseやAPIからデータを取得
-  return {
+  // const response = await fetch('https://api.buzzlab8.jp/page-data', { 
+  //   next: { revalidate: 3600 } // ISR設定
+  // })
+  
+  // 現在は静的データを返す（パフォーマンス最適化済み）
+  const data = {
     services: servicesData,
     achievements: achievementsData,
     faqs: faqsData,
@@ -197,4 +204,11 @@ export async function getPageData() {
       lastUpdated: new Date().toISOString()
     }
   }
+  
+  // データの整合性チェック（本番環境での安全性確保）
+  if (!data.services || !data.achievements || !data.faqs) {
+    throw new Error('必要なページデータが不足しています')
+  }
+  
+  return data
 } 

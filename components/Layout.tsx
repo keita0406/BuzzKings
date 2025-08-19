@@ -13,6 +13,7 @@ const navigation = [
   { name: 'ホーム', href: '#home' },
   { name: 'サービス', href: '#services' },
   { name: '実績', href: '#achievements' },
+  { name: 'サステナブル', href: '/sustainable' },
   { name: 'よくある質問', href: '#faq' },
 ]
 
@@ -82,8 +83,10 @@ export default function Layout({ children }: LayoutProps) {
                   whileHover={{ scale: 1.05 }}
                   href={item.href}
                   onClick={(e) => {
-                    e.preventDefault()
-                    scrollToSection(item.href)
+                    if (item.href.startsWith('#')) {
+                      e.preventDefault()
+                      scrollToSection(item.href)
+                    }
                   }}
                   className="text-base font-medium text-gray-700 hover:text-gray-900 cursor-pointer transition-colors"
                 >
@@ -139,8 +142,12 @@ export default function Layout({ children }: LayoutProps) {
                       key={item.name}
                       href={item.href}
                       onClick={(e) => {
-                        e.preventDefault()
-                        scrollToSection(item.href)
+                        if (item.href.startsWith('#')) {
+                          e.preventDefault()
+                          scrollToSection(item.href)
+                        } else {
+                          setMobileMenuOpen(false)
+                        }
                       }}
                       className="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50"
                     >
