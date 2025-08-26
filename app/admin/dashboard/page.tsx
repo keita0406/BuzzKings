@@ -24,6 +24,7 @@ import {
 import type { BlogPost, BlogCategory } from '@/lib/supabase'
 import RAGTestPanel from '@/components/RAGTestPanel'
 import ContentGenerationTab from '@/components/ContentGenerationTab'
+import KeitaSNSManualRAGPanel from '@/components/KeitaSNSManualRAGPanel'
 
 interface RAGStats {
   totalContents: number
@@ -55,7 +56,7 @@ export default function AdminDashboard() {
   const [tags, setTags] = useState<Array<{ id: string; name: string; slug: string }>>([])
   const [ragStats, setRagStats] = useState<RAGStats | null>(null)
   const [isLoading, setIsLoading] = useState(true)
-  const [activeTab, setActiveTab] = useState<'posts' | 'rag' | 'content-generation'>('posts')
+  const [activeTab, setActiveTab] = useState<'posts' | 'rag' | 'keita-sns-rag' | 'content-generation'>('posts')
   const router = useRouter()
 
   useEffect(() => {
@@ -313,6 +314,17 @@ export default function AdminDashboard() {
             >
               <ChatBubbleLeftRightIcon className="h-5 w-5 inline mr-2" />
               RAGシステム
+            </button>
+            <button
+              onClick={() => setActiveTab('keita-sns-rag')}
+              className={`py-4 px-1 border-b-2 font-medium text-sm ${
+                activeTab === 'keita-sns-rag'
+                  ? 'border-blue-500 text-blue-600'
+                  : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+              }`}
+            >
+              <CpuChipIcon className="h-5 w-5 inline mr-2" />
+              KEITA流SNSマニュアルRAG
             </button>
             <button
               onClick={() => setActiveTab('content-generation')}
@@ -815,6 +827,11 @@ export default function AdminDashboard() {
               <RAGTestPanel />
             </motion.div>
           </div>
+        )}
+
+        {/* KEITA流SNSマニュアルRAG Tab */}
+        {activeTab === 'keita-sns-rag' && (
+          <KeitaSNSManualRAGPanel />
         )}
 
         {/* Content Generation Tab */}

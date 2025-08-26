@@ -1,0 +1,86 @@
+
+> nextjs@0.1.0 dev
+> next dev
+
+  ▲ Next.js 13.5.1
+  - Local:        http://localhost:3000
+  - Environments: .env.local
+  - Experiments (use at your own risk):
+     · serverComponentsExternalPackages
+
+ ✓ Ready in 2.1s
+ ○ compiling /admin/page ...
+ ✓ Compiled /admin/page in 6.1s (1211 modules)
+ ✓ Compiled in 675ms (617 modules)
+ ✓ Compiled /admin/dashboard/page in 2.1s (1388 modules)
+ ✓ Compiled /api/rag/route in 968ms (728 modules)
+[SUPABASE] Initializing client with:
+  - URL: https://xwhqrgpkvtcmkuvasrzq.supabase.co
+  - ANON_KEY exists: true
+  - ANON_KEY length: 208
+  - SERVICE_KEY exists: true
+ ✓ Compiled /api/relevance-engine/route in 102ms (733 modules)
+[SUPABASE] Initializing client with:
+  - URL: https://xwhqrgpkvtcmkuvasrzq.supabase.co
+  - ANON_KEY exists: true
+  - ANON_KEY length: 208
+  - SERVICE_KEY exists: true
+ ✓ Compiled /api/keita-sns-vectorize/route in 435ms (812 modules)
+🚀 KEITA流SNSマニュアルベクトル化API開始
+🚀 KEITA流SNSマニュアルベクトル化開始...
+📋 処理対象: 102件
+✅ データ変換完了
+📦 6バッチに分割
+🔄 バッチ 1/6 処理中... (20件)
+Supabase保存エラー: {
+  code: '42501',
+  details: null,
+  hint: null,
+  message: 'new row violates row-level security policy for table "buzzlab_vectors"'
+}
+バッチ 1 処理エラー: [object Object]
+🔄 バッチ 2/6 処理中... (20件)
+Supabase保存エラー: {
+  code: '42501',
+  details: null,
+  hint: null,
+  message: 'new row violates row-level security policy for table "buzzlab_vectors"'
+}
+バッチ 2 処理エラー: [object Object]
+🔄 バッチ 3/6 処理中... (20件)
+Supabase保存エラー: {
+  code: '42501',
+  details: null,
+  hint: null,
+  message: 'new row violates row-level security policy for table "buzzlab_vectors"'
+}
+バッチ 3 処理エラー: [object Object]
+🔄 バッチ 4/6 処理中... (20件)
+Supabase保存エラー: {
+  code: '42501',
+  details: null,
+  hint: null,
+  message: 'new row violates row-level security policy for table "buzzlab_vectors"'
+}
+バッチ 4 処理エラー: [object Object]
+🔄 バッチ 5/6 処理中... (20件)
+Supabase保存エラー: {
+  code: '42501',
+  details: null,
+  hint: null,
+  message: 'new row violates row-level security policy for table "buzzlab_vectors"'
+}
+バッチ 5 処理エラー: [object Object]
+🔄 バッチ 6/6 処理中... (2件)
+Supabase保存エラー: {
+  code: '42501',
+  details: null,
+  hint: null,
+  message: 'new row violates row-level security policy for table "buzzlab_vectors"'
+}
+バッチ 6 処理エラー: [object Object]
+
+🎉 KEITA流SNSマニュアルベクトル化完了!
+📊 処理結果: 102/102件成功
+⏱️ 処理時間: 81秒
+❌ エラー数: 6件
